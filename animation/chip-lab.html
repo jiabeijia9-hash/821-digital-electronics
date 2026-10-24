@@ -1,0 +1,2327 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数电第四章：十二款核心组合逻辑芯片动态原理实验台</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&display=swap">
+  <style>
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #090d16;
+      color: #f8fafc;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .chip-tab {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .chip-tab.active {
+      background: linear-gradient(135deg, #0284c7, #2563eb);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(56, 189, 248, 0.45);
+      border-color: #38bdf8;
+      transform: translateY(-2px);
+    }
+    .fam-card {
+      background: rgba(15, 23, 42, 0.92);
+      border: 1px solid #1e293b;
+      border-radius: 16px;
+      padding: 10px;
+    }
+    .fam-head {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      padding: 2px 4px 9px;
+      border-bottom: 1px dashed #1e293b;
+      margin-bottom: 9px;
+    }
+    .fam-dot { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+    .fam-title { font-size: 12px; font-weight: 700; letter-spacing: 0.04em; }
+    .fam-tag {
+      margin-left: auto;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 1px 8px;
+      border-radius: 9999px;
+      background: #1e293b;
+      color: #94a3b8;
+    }
+    #chipTabs .chip-tab {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+      text-align: left;
+      padding: 6px 10px;
+      border-radius: 9px;
+      background: rgba(2, 6, 23, 0.7);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    #chipTabs .chip-tab:hover { border-color: #64748b; transform: translateY(-1px); }
+    #chipTabs .chip-tab .model {
+      font-family: 'JetBrains Mono', monospace;
+      font-weight: 700;
+      font-size: 12.5px;
+      color: #e2e8f0;
+      white-space: nowrap;
+    }
+    #chipTabs .chip-tab .desc { font-size: 10.5px; color: #8ea0b8; text-align: right; }
+    #chipTabs .chip-tab.active .model, #chipTabs .chip-tab.active .desc { color: #ffffff; }
+    .rhyme-card {
+      background: rgba(2, 6, 23, 0.65);
+      border: 1px solid #1e293b;
+      border-left-width: 3px;
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .pin-btn {
+      transition: all 0.15s ease;
+    }
+    .pin-btn:active {
+      transform: scale(0.93);
+    }
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: radial-gradient(circle at center, #111827 0%, #090d16 100%);
+    }
+  </style>
+  <style data-tailwind-static>
+*,:after,:before{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgba(59,130,246,.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/*! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com*/*,:after,:before{box-sizing:border-box;border:0 solid #e5e7eb}:after,:before{--tw-content:""}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;-o-tab-size:4;tab-size:4;font-family:ui-sans-serif,system-ui,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji;font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,Liberation Mono,Courier New,monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0}fieldset,legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::-moz-placeholder,textarea::-moz-placeholder{opacity:1;color:#9ca3af}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.relative{position:relative}.bottom-3{bottom:.75rem}.left-3{left:.75rem}.top-3{top:.75rem}.z-40{z-index:40}.mx-1{margin-left:.25rem;margin-right:.25rem}.mx-auto{margin-left:auto;margin-right:auto}.mb-1{margin-bottom:.25rem}.mb-2{margin-bottom:.5rem}.mb-2\.5{margin-bottom:.625rem}.mb-3{margin-bottom:.75rem}.mb-4{margin-bottom:1rem}.mb-6{margin-bottom:1.5rem}.mt-0\.5{margin-top:.125rem}.mt-1{margin-top:.25rem}.mt-2{margin-top:.5rem}.mt-4{margin-top:1rem}.mt-6{margin-top:1.5rem}.block{display:block}.inline-block{display:inline-block}.flex{display:flex}.inline-flex{display:inline-flex}.grid{display:grid}.hidden{display:none}.h-2{height:.5rem}.h-2\.5{height:.625rem}.min-h-screen{min-height:100vh}.w-2{width:.5rem}.w-2\.5{width:.625rem}.w-44{width:11rem}.w-full{width:100%}.max-w-7xl{max-width:80rem}.flex-1{flex:1 1 0%}.transform{transform:translate(var(--tw-translate-x),var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes pulse{50%{opacity:.5}}.animate-pulse{animation:pulse 2s cubic-bezier(.4,0,.6,1) infinite}.grid-cols-1{grid-template-columns:repeat(1,minmax(0,1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-center{align-items:center}.justify-between{justify-content:space-between}.gap-1{gap:.25rem}.gap-1\.5{gap:.375rem}.gap-2{gap:.5rem}.gap-2\.5{gap:.625rem}.gap-3{gap:.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-x-4{-moz-column-gap:1rem;column-gap:1rem}.gap-y-1{row-gap:.25rem}.space-y-2\.5>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.625rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.625rem*var(--tw-space-y-reverse))}.space-y-3>:not([hidden])~:not([hidden]){--tw-space-y-reverse:0;margin-top:calc(.75rem*(1 - var(--tw-space-y-reverse)));margin-bottom:calc(.75rem*var(--tw-space-y-reverse))}.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}.break-all{word-break:break-all}.rounded{border-radius:.25rem}.rounded-2xl{border-radius:1rem}.rounded-\[20px\]{border-radius:20px}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:.5rem}.rounded-md{border-radius:.375rem}.rounded-xl{border-radius:.75rem}.border{border-width:1px}.border-b{border-bottom-width:1px}.border-l-4{border-left-width:4px}.border-t{border-top-width:1px}.border-amber-400{--tw-border-opacity:1;border-color:rgb(251 191 36/var(--tw-border-opacity,1))}.border-amber-500{--tw-border-opacity:1;border-color:rgb(245 158 11/var(--tw-border-opacity,1))}.border-amber-500\/40{border-color:rgba(245,158,11,.4)}.border-cyan-500{--tw-border-opacity:1;border-color:rgb(6 182 212/var(--tw-border-opacity,1))}.border-cyan-500\/30{border-color:rgba(6,182,212,.3)}.border-cyan-600\/40{border-color:rgba(8,145,178,.4)}.border-emerald-400{--tw-border-opacity:1;border-color:rgb(52 211 153/var(--tw-border-opacity,1))}.border-emerald-500{--tw-border-opacity:1;border-color:rgb(16 185 129/var(--tw-border-opacity,1))}.border-emerald-500\/40{border-color:rgba(16,185,129,.4)}.border-emerald-600\/40{border-color:rgba(5,150,105,.4)}.border-rose-400{--tw-border-opacity:1;border-color:rgb(251 113 133/var(--tw-border-opacity,1))}.border-rose-500{--tw-border-opacity:1;border-color:rgb(244 63 94/var(--tw-border-opacity,1))}.border-rose-500\/40{border-color:rgba(244,63,94,.4)}.border-rose-600\/40{border-color:rgba(225,29,72,.4)}.border-sky-400{--tw-border-opacity:1;border-color:rgb(56 189 248/var(--tw-border-opacity,1))}.border-sky-500{--tw-border-opacity:1;border-color:rgb(14 165 233/var(--tw-border-opacity,1))}.border-sky-500\/30{border-color:rgba(14,165,233,.3)}.border-sky-500\/40{border-color:rgba(14,165,233,.4)}.border-sky-600\/40{border-color:rgba(2,132,199,.4)}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85/var(--tw-border-opacity,1))}.border-slate-700\/60{border-color:rgba(51,65,85,.6)}.border-slate-700\/70{border-color:rgba(51,65,85,.7)}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59/var(--tw-border-opacity,1))}.border-slate-800\/80{border-color:rgba(30,41,59,.8)}.border-slate-800\/90{border-color:rgba(30,41,59,.9)}.bg-amber-400{--tw-bg-opacity:1;background-color:rgb(251 191 36/var(--tw-bg-opacity,1))}.bg-amber-500\/20{background-color:rgba(245,158,11,.2)}.bg-amber-900\/60{background-color:rgba(120,53,15,.6)}.bg-cyan-400{--tw-bg-opacity:1;background-color:rgb(34 211 238/var(--tw-bg-opacity,1))}.bg-cyan-900\/60{background-color:rgba(22,78,99,.6)}.bg-emerald-400{--tw-bg-opacity:1;background-color:rgb(52 211 153/var(--tw-bg-opacity,1))}.bg-emerald-500\/20{background-color:rgba(16,185,129,.2)}.bg-emerald-900\/50{background-color:rgba(6,78,59,.5)}.bg-emerald-900\/60{background-color:rgba(6,78,59,.6)}.bg-rose-500\/25{background-color:rgba(244,63,94,.25)}.bg-rose-900\/50{background-color:rgba(136,19,55,.5)}.bg-rose-900\/60{background-color:rgba(136,19,55,.6)}.bg-sky-400{--tw-bg-opacity:1;background-color:rgb(56 189 248/var(--tw-bg-opacity,1))}.bg-sky-500\/10{background-color:rgba(14,165,233,.1)}.bg-sky-500\/15{background-color:rgba(14,165,233,.15)}.bg-sky-500\/20{background-color:rgba(14,165,233,.2)}.bg-sky-900\/60{background-color:rgba(12,74,110,.6)}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59/var(--tw-bg-opacity,1))}.bg-slate-900\/80{background-color:rgba(15,23,42,.8)}.bg-slate-900\/85{background-color:rgba(15,23,42,.85)}.bg-slate-900\/90{background-color:rgba(15,23,42,.9)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23/var(--tw-bg-opacity,1))}.bg-slate-950\/50{background-color:rgba(2,6,23,.5)}.bg-slate-950\/70{background-color:rgba(2,6,23,.7)}.bg-slate-950\/90{background-color:rgba(2,6,23,.9)}.bg-gradient-to-r{background-image:linear-gradient(to right,var(--tw-gradient-stops))}.from-sky-400{--tw-gradient-from:#38bdf8 var(--tw-gradient-from-position);--tw-gradient-to:rgba(56,189,248,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to)}.via-cyan-300{--tw-gradient-to:rgba(103,232,249,0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from),#67e8f9 var(--tw-gradient-via-position),var(--tw-gradient-to)}.to-indigo-400{--tw-gradient-to:#818cf8 var(--tw-gradient-to-position)}.bg-clip-text{-webkit-background-clip:text;background-clip:text}.p-2\.5{padding:.625rem}.p-3{padding:.75rem}.p-3\.5{padding:.875rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.px-2{padding-left:.5rem;padding-right:.5rem}.px-2\.5{padding-left:.625rem;padding-right:.625rem}.px-3{padding-left:.75rem;padding-right:.75rem}.px-4{padding-left:1rem;padding-right:1rem}.py-1{padding-top:.25rem;padding-bottom:.25rem}.py-1\.5{padding-top:.375rem;padding-bottom:.375rem}.py-2{padding-top:.5rem;padding-bottom:.5rem}.py-2\.5{padding-top:.625rem;padding-bottom:.625rem}.py-3{padding-top:.75rem;padding-bottom:.75rem}.pb-4{padding-bottom:1rem}.pl-\[11\.5rem\]{padding-left:11.5rem}.pt-3{padding-top:.75rem}.text-left{text-align:left}.text-center{text-align:center}.text-2xl{font-size:1.5rem;line-height:2rem}.text-\[10px\]{font-size:10px}.text-\[11\.5px\]{font-size:11.5px}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:.875rem;line-height:1.25rem}.text-xs{font-size:.75rem;line-height:1rem}.font-bold{font-weight:700}.font-semibold{font-weight:600}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.tracking-tight{letter-spacing:-.025em}.tracking-wider{letter-spacing:.05em}.text-amber-200{--tw-text-opacity:1;color:rgb(253 230 138/var(--tw-text-opacity,1))}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77/var(--tw-text-opacity,1))}.text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36/var(--tw-text-opacity,1))}.text-cyan-300{--tw-text-opacity:1;color:rgb(103 232 249/var(--tw-text-opacity,1))}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183/var(--tw-text-opacity,1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153/var(--tw-text-opacity,1))}.text-purple-300{--tw-text-opacity:1;color:rgb(216 180 254/var(--tw-text-opacity,1))}.text-rose-300{--tw-text-opacity:1;color:rgb(253 164 175/var(--tw-text-opacity,1))}.text-rose-400{--tw-text-opacity:1;color:rgb(251 113 133/var(--tw-text-opacity,1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252/var(--tw-text-opacity,1))}.text-sky-400{--tw-text-opacity:1;color:rgb(56 189 248/var(--tw-text-opacity,1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225/var(--tw-text-opacity,1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184/var(--tw-text-opacity,1))}.text-slate-500{--tw-text-opacity:1;color:rgb(100 116 139/var(--tw-text-opacity,1))}.text-slate-600{--tw-text-opacity:1;color:rgb(71 85 105/var(--tw-text-opacity,1))}.text-transparent{color:transparent}.text-white{--tw-text-opacity:1;color:rgb(255 255 255/var(--tw-text-opacity,1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgba(0,0,0,.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_12px_rgba\(244\2c 63\2c 94\2c 0\.35\)\]{--tw-shadow:0 0 12px rgba(244,63,94,.35);--tw-shadow-colored:0 0 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_12px_rgba\(251\2c 191\2c 36\2c 0\.35\)\]{--tw-shadow:0 0 12px rgba(251,191,36,.35);--tw-shadow-colored:0 0 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_12px_rgba\(52\2c 211\2c 153\2c 0\.35\)\]{--tw-shadow:0 0 12px rgba(52,211,153,.35);--tw-shadow-colored:0 0 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.shadow-\[0_0_12px_rgba\(56\2c 189\2c 248\2c 0\.35\)\]{--tw-shadow:0 0 12px rgba(56,189,248,.35);--tw-shadow-colored:0 0 12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow,0 0 #0000),var(--tw-ring-shadow,0 0 #0000),var(--tw-shadow)}.backdrop-blur{--tw-backdrop-blur:blur(8px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition{transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,-webkit-backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter;transition-property:color,background-color,border-color,text-decoration-color,fill,stroke,opacity,box-shadow,transform,filter,backdrop-filter,-webkit-backdrop-filter;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:.15s}.hover\:bg-amber-800\/80:hover{background-color:rgba(146,64,14,.8)}.hover\:bg-cyan-800\/80:hover{background-color:rgba(21,94,117,.8)}.hover\:bg-emerald-800\/70:hover{background-color:rgba(6,95,70,.7)}.hover\:bg-emerald-800\/80:hover{background-color:rgba(6,95,70,.8)}.hover\:bg-rose-800\/70:hover{background-color:rgba(159,18,57,.7)}.hover\:bg-rose-800\/80:hover{background-color:rgba(159,18,57,.8)}.hover\:bg-sky-800\/80:hover{background-color:rgba(7,89,133,.8)}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85/var(--tw-bg-opacity,1))}.hover\:bg-slate-800\/50:hover{background-color:rgba(30,41,59,.5)}@media (min-width:640px){.sm\:grid-cols-2{grid-template-columns:repeat(2,minmax(0,1fr))}.sm\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}.sm\:p-6{padding:1.5rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-sm{font-size:.875rem;line-height:1.25rem}}@media (min-width:1024px){.lg\:col-span-4{grid-column:span 4/span 4}.lg\:col-span-8{grid-column:span 8/span 8}.lg\:grid-cols-12{grid-template-columns:repeat(12,minmax(0,1fr))}.lg\:grid-cols-3{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  </style>
+</head>
+<body class="min-h-screen p-3 sm:p-6">
+
+  <!-- 左侧浮窗导航（简洁圆润） -->
+  <aside class="fixed left-3 top-3 bottom-3 z-40 w-44 flex flex-col rounded-[20px] border border-slate-700/70 bg-slate-900/90 backdrop-blur shadow-2xl overflow-hidden">
+    <div class="px-3 py-3 border-b border-slate-800">
+      <div class="text-xs font-bold text-sky-300 text-center">芯片实验台</div>
+      <div class="text-[10px] text-slate-500 text-center mt-0.5">12 款组合逻辑 MSI</div>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-3" id="chipTabs">
+      <div>
+        <div class="fam-head" style="padding-bottom:5px;margin-bottom:6px"><span class="fam-dot" style="background:#3b82f6"></span><span class="fam-title" style="color:#93c5fd;font-size:11px">编码器 · 压缩</span></div>
+        <div class="flex flex-col gap-1">
+          <button onclick="selectChip('74HC148')" id="tab-74HC148" class="chip-tab"><span class="model">74HC148</span><span class="desc">8→3线</span></button>
+          <button onclick="selectChip('74HC147')" id="tab-74HC147" class="chip-tab"><span class="model">74HC147</span><span class="desc">10键BCD</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="fam-head" style="padding-bottom:5px;margin-bottom:6px"><span class="fam-dot" style="background:#10b981"></span><span class="fam-title" style="color:#6ee7b7;font-size:11px">译码器 · 点名</span></div>
+        <div class="flex flex-col gap-1">
+          <button onclick="selectChip('74HC138')" id="tab-74HC138" class="chip-tab"><span class="model">74HC138</span><span class="desc">3→8线</span></button>
+          <button onclick="selectChip('74HC139')" id="tab-74HC139" class="chip-tab"><span class="model">74HC139</span><span class="desc">双2→4</span></button>
+          <button onclick="selectChip('74HC42')" id="tab-74HC42" class="chip-tab"><span class="model">74HC42</span><span class="desc">BCD→10</span></button>
+          <button onclick="selectChip('74HC4511')" id="tab-74HC4511" class="chip-tab"><span class="model">74HC4511</span><span class="desc">七段锁存</span></button>
+          <button onclick="selectChip('7448')" id="tab-7448" class="chip-tab"><span class="model">7448</span><span class="desc">七段显示</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="fam-head" style="padding-bottom:5px;margin-bottom:6px"><span class="fam-dot" style="background:#a855f7"></span><span class="fam-title" style="color:#d8b4fe;font-size:11px">选择器 · 点播</span></div>
+        <div class="flex flex-col gap-1">
+          <button onclick="selectChip('74HC151')" id="tab-74HC151" class="chip-tab"><span class="model">74HC151</span><span class="desc">8选1</span></button>
+          <button onclick="selectChip('74HC153')" id="tab-74HC153" class="chip-tab"><span class="model">74HC153</span><span class="desc">双4选1</span></button>
+          <button onclick="selectChip('74HC157')" id="tab-74HC157" class="chip-tab"><span class="model">74HC157</span><span class="desc">四2选1</span></button>
+        </div>
+      </div>
+      <div>
+        <div class="fam-head" style="padding-bottom:5px;margin-bottom:6px"><span class="fam-dot" style="background:#f59e0b"></span><span class="fam-title" style="color:#fcd34d;font-size:11px">运算 · 加与比</span></div>
+        <div class="flex flex-col gap-1">
+          <button onclick="selectChip('74HC283')" id="tab-74HC283" class="chip-tab"><span class="model">74HC283</span><span class="desc">4位加法</span></button>
+          <button onclick="selectChip('74HC85')" id="tab-74HC85" class="chip-tab"><span class="model">74HC85</span><span class="desc">4位比较</span></button>
+        </div>
+      </div>
+    </nav>
+    <div class="px-2 py-2 border-t border-slate-800">
+      <div class="text-[10px] text-slate-500 leading-relaxed text-center">蓝=编码 绿=译码<br>紫=选择 琥珀=运算</div>
+    </div>
+  </aside>
+
+  <div class="max-w-7xl mx-auto pl-[11.5rem]">
+    <!-- 顶部标题栏 -->
+    <header class="text-center mb-6">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold mb-2">
+        <span>⚡ 数字电子技术 · 第四章组合逻辑 MSI 芯片全景动画</span>
+      </div>
+      <h1 class="text-2xl sm:text-3xl font-bold tracking-tight bg-gradient-to-r from-sky-400 via-cyan-300 to-indigo-400 bg-clip-text text-transparent">
+        编码 · 译码 · 数据选择 · 运算 MSI 芯片动态原理实验台
+      </h1>
+      <p class="text-slate-400 text-sm mt-1">
+        点击下方芯片切换实验模块，直接拨动输入引脚开关，实时观察优先级屏蔽、反码转换、最小项译码、七段数码管点亮、多路数据切换与全加 / 数值比较运算过程
+      </p>
+    </header>
+
+    <!-- 主工作台 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <!-- 左侧：控制开关与动态画布 (占 8 列) -->
+      <div class="lg:col-span-8 bg-slate-900/90 border border-slate-800 rounded-2xl p-4 shadow-2xl flex flex-col justify-between">
+        <!-- 交互式输入开关面板 -->
+        <div class="bg-slate-950/90 border border-slate-800/90 rounded-xl p-3.5 mb-4">
+          <div class="flex flex-wrap items-center justify-between gap-2 mb-2.5">
+            <span class="text-xs font-semibold uppercase tracking-wider text-sky-400 flex items-center gap-1.5">
+              <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+              交互引脚控制台（点击按钮切换 0 / 1 电平）
+            </span>
+            <div class="flex items-center gap-2" id="quickPresets"></div>
+          </div>
+          <div id="inputControls" class="flex flex-wrap gap-2 items-center"></div>
+        </div>
+
+        <!-- 动态电路仿真 Canvas -->
+        <div class="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-950">
+          <canvas id="simCanvas" width="760" height="450"></canvas>
+        </div>
+
+        <!-- 图例说明（移出画布独立成行，避免遮挡画布底部引脚标注） -->
+        <div class="mt-2 inline-flex flex-wrap gap-x-4 gap-y-1 bg-slate-900/85 px-3 py-1.5 rounded-lg border border-slate-700/60 text-xs text-slate-300">
+          <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-sky-400 inline-block"></i>低电平有效激活 (0)</span>
+          <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block"></i>高电平有效激活 (1)</span>
+          <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></i>被高优先级屏蔽</span>
+          <span class="flex items-center gap-1.5"><i class="w-2.5 h-2.5 rounded-full bg-cyan-400 inline-block"></i>数据/选中通路</span>
+        </div>
+
+        <!-- 实时真值状态反馈条 -->
+        <div id="liveStatusBanner" class="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3"></div>
+      </div>
+
+      <!-- 右侧：深度原理剖析与考点秘籍面板 (占 4 列) -->
+      <div class="lg:col-span-4 flex flex-col gap-4">
+        <div id="theoryPanel" class="bg-slate-900/90 border border-slate-800 rounded-2xl p-5 shadow-2xl flex-1 flex flex-col justify-between">
+          <!-- 动态注入原理说明 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 页面底部：生活化记忆口诀 -->
+    <div class="mt-6 rounded-2xl border border-slate-700/70 bg-slate-900/80 overflow-hidden">
+      <button onclick="toggleRhyme()" class="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-slate-800/50 transition">
+        <span class="text-sm font-bold text-cyan-300">🎵 记忆口诀 · 讲给奶奶听的芯片故事（点击展开 / 收起）</span>
+        <span id="rhymeArrow" class="text-xs text-slate-400">收起 ▴</span>
+      </button>
+      <div id="rhymePanel" class="px-4 pb-4">
+        <p class="text-xs text-slate-400 mb-3">别死记型号！每颗芯片都是家里的一件小事——先看比喻，再念口诀，一遍就记住。</p>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
+          <div class="rhyme-card" style="border-left-color:#3b82f6">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-sky-300">74HC148</span><span class="text-[10px] text-slate-500">8变3 · 优先编码</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">像 8 个孩子抢着举手，老师只点号数最大的那个。</p>
+            <p class="text-xs font-semibold text-amber-200">「八娃抢答吵嚷嚷，只点老大来报数。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#3b82f6">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-sky-300">74HC147</span><span class="text-[10px] text-slate-500">10键变BCD</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">像老式门牌键盘：按哪个数字，4 根线就把号码报出来。</p>
+            <p class="text-xs font-semibold text-amber-200">「十个小键报家门，四根线儿传号码。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#10b981">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-emerald-300">74HC138</span><span class="text-[10px] text-slate-500">3变8 · 译码</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">3 个开关管 8 间客房，拨到几号，就亮那间的灯。</p>
+            <p class="text-xs font-semibold text-amber-200">「三个开关八个房，拨到哪间亮哪间。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#10b981">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-emerald-300">74HC139</span><span class="text-[10px] text-slate-500">双份2变4</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">一盒装了两台小点唱机，各管 4 首歌，互不打扰。</p>
+            <p class="text-xs font-semibold text-amber-200">「一盒两台小机器，各点各的四出戏。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#10b981">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-emerald-300">74HC42</span><span class="text-[10px] text-slate-500">BCD变10路</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">酒店门牌调度员：报 0～9 送对房间；报错号码一律不开门。</p>
+            <p class="text-xs font-semibold text-amber-200">「号码对就开门，号码错全不理。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#10b981">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-emerald-300">74HC4511</span><span class="text-[10px] text-slate-500">七段+锁存</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">给数字拍照的画师：按下快门（LE），字就定住，后面怎么变都不改。</p>
+            <p class="text-xs font-semibold text-amber-200">「先拍照再描字，照片定了不改样。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#10b981">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-emerald-300">7448</span><span class="text-[10px] text-slate-500">七段显示</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">数码管的点灯师傅：七根灯芯该亮哪根点哪根，还能全亮查坏灯。</p>
+            <p class="text-xs font-semibold text-amber-200">「七盏灯来一点亮，坏灯好灯试出来。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#a855f7">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-purple-300">74HC151</span><span class="text-[10px] text-slate-500">8选1</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">8 台电视接 1 个屏幕，遥控器一按换台，还能倒着放画面（W 反相）。</p>
+            <p class="text-xs font-semibold text-amber-200">「八台电视一个屏，遥控一按换台看。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#a855f7">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-purple-300">74HC153</span><span class="text-[10px] text-slate-500">双4选1</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">客厅卧室两台电视共用一个遥控器，一按两台同时换台。</p>
+            <p class="text-xs font-semibold text-amber-200">「两台电视一个钮，说换就换一起走。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#a855f7">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-purple-300">74HC157</span><span class="text-[10px] text-slate-500">四2选1</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">4 对窗帘共用一根拉绳，一拉整排全换边，不能只换一只。</p>
+            <p class="text-xs font-semibold text-amber-200">「四对窗帘一根绳，一拉全换不开单。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#f59e0b">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-amber-300">74HC283</span><span class="text-[10px] text-slate-500">4位加法</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">打算盘的小会计：两排数一起加，满十进一往上传。</p>
+            <p class="text-xs font-semibold text-amber-200">「小会计打算盘，满十进一往上搬。」</p>
+          </div>
+          <div class="rhyme-card" style="border-left-color:#f59e0b">
+            <div class="flex items-center justify-between mb-1"><span class="mono text-xs font-bold text-amber-300">74HC85</span><span class="text-[10px] text-slate-500">4位比较</span></div>
+            <p class="text-[11.5px] text-slate-300 leading-relaxed mb-1">裁判比两队人马：从最前面看起，先分出高低的赢；全一样就看纸条（级联输入）。</p>
+            <p class="text-xs font-semibold text-amber-200">「比个头从顶看，分不出就看纸条。」</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 当前选中的芯片型号
+    let currentChip = '74HC148';
+    let animPhase = 0;
+
+    // 各芯片的独立引脚状态存储
+    const chipStates = {
+      '74HC148': {
+        S_bar: 0, // 低有效使能端，0=工作，1=禁止
+        I_bar: [1, 1, 0, 1, 1, 0, 1, 1] // I0'~I7'，默认同时按下 I2'=0 和 I5'=0 演示优先级
+      },
+      '74HC147': {
+        // I1'~I9' 共9个输入（I0隐含在全1状态中），索引 1~9
+        I_bar: [1, 1, 1, 0, 1, 1, 1, 0, 1, 1] // 默认 I3'=0 和 I7'=0 同时按下
+      },
+      '74HC138': {
+        S1: 1,
+        S2_bar: 0,
+        S3_bar: 0,
+        A2: 1,
+        A1: 0,
+        A0: 1 // 默认输入 101 (5号)
+      },
+      '74HC42': {
+        A3: 0,
+        A2: 1,
+        A1: 1,
+        A0: 0 // 默认输入 0110 (6号)，可测试 >9 的伪码拒绝特性
+      },
+      '7448': {
+        LT_bar: 1, // 灯测试，0=全亮8
+        BI_RBO_bar: 1, // 灭灯端，0=全灭
+        RBI_bar: 1, // 灭零输入，0=当输入0000时熄灭
+        A3: 0,
+        A2: 1,
+        A1: 0,
+        A0: 1 // 默认显示数字 5 (0101)
+      },
+      '74HC139': {
+        // 两个完全独立的半片译码器
+        halves: [
+          { G_bar: 0, A1: 1, A0: 0 }, // 半片1：默认译码 2 号
+          { G_bar: 0, A1: 0, A0: 1 }  // 半片2：默认译码 1 号
+        ]
+      },
+      '74HC4511': {
+        LT_bar: 1, // 试灯，0=全亮8（优先级最高）
+        BL_bar: 1, // 灭灯，0=强制全灭
+        LE: 0,     // 锁存使能，1=冻结输出（高电平有效！）
+        A3: 0, A2: 1, A1: 0, A0: 1, // 默认输入 5
+        latchedNum: 5 // LE 置 1 时刻锁存的值
+      },
+      '74HC151': {
+        D: [1, 0, 1, 0, 0, 1, 0, 1], // D0~D7 八路数据
+        C: 1, B: 0, A: 1, // 地址 CBA=101，选中 D5
+        E_bar: 0 // 低有效使能
+      },
+      '74HC153': {
+        B: 1, A: 0,       // 共享地址 BA=10，选中 2 号通道
+        G1_bar: 0,        // 上半片使能（低有效）
+        G2_bar: 0,        // 下半片使能（低有效）
+        D1: [1, 0, 1, 0], // 1C0~1C3
+        D2: [0, 1, 1, 0]  // 2C0~2C3
+      },
+      '74HC157': {
+        S: 1,        // 选择端：0→A组，1→B组
+        G_bar: 0,    // 低有效使能
+        A: [1, 0, 1, 0], // 1A~4A（S=0 时选通）
+        B: [0, 1, 0, 1]  // 1B~4B（S=1 时选通）
+      },
+      '74HC283': {
+        A: [1, 0, 0, 1], // A0~A3 = 1001 (9)
+        B: [1, 1, 1, 0], // B0~B3 = 0111 (7)
+        Cin: 0           // 低位进位输入
+      },
+      '74HC85': {
+        A: [1, 0, 1, 1], // A0~A3 = 1101 (13)
+        B: [1, 0, 0, 1], // B0~B3 = 1001 (9)
+        gtIn: 0, eqIn: 1, ltIn: 0 // 级联输入（单片使用应 A=B in=1）
+      }
+    };
+
+    // 五款芯片的详细原理与考点知识库
+    const chipDocs = {
+      '74HC148': {
+        name: '74HC148（8线-3线优先编码器）',
+        nickname: '“嫌贫爱富的霸道总裁”',
+        summary: '将 8 个请求信号（I0′~I7′）压缩成 3 位二进制代码（Y2′Y1′Y0′）。它的输入、输出、使能端全部是“低电平有效（带反相圆圈）”！',
+        rules: [
+          '<strong>霸道优先级（I7′ > I6′ > … > I0′）</strong>：只要高编号引脚有信号（为 0），比它小的引脚哪怕同时按下（为 0）也会被内部逻辑门<strong>直接无视屏蔽</strong>！',
+          '<strong>反码输出</strong>：比如点中了 <span class="mono text-sky-400">I5′=0</span>（二进制本是 101），输出会取反变成 <span class="mono text-sky-400">Y2′Y1′Y0′ = 010</span>。',
+          '<strong>两大灵魂哨兵脚（必考！）</strong>：<br>• <span class="mono text-emerald-400">Yex′ (GS′) = 0</span>：代表“芯片醒着，且<strong>真的有人按键</strong>”。<br>• <span class="mono text-amber-400">Ys′ (EO′) = 0</span>：代表“芯片醒着，但<strong>完全没人按键</strong>”，专门连到下一片 148 的 S′ 端做级联扩展！'
+        ],
+        formula: "Y2'Y1'Y0' = ~(最高优先级下标 i) | Yex'=0 (有输入) | Ys'=0 (空闲)"
+      },
+      '74HC147': {
+        name: '74HC147（10线-4线 BCD 优先编码器）',
+        nickname: '“无开关的十进制键盘翻译官”',
+        summary: '专门把键盘上的十进制按键（1~9）翻译成 4 位 8421 BCD 码的反码。注意它全身上下没有使能端（随时待命），而且没有 I0′ 引脚！',
+        rules: [
+          '<strong>为什么只有 9 根输入线（I1′~I9′）？</strong>：因为当 I1′~I9′ 全部为 1（没有任何键按下）时，输出正好是 <span class="mono text-sky-400">1111</span>（即 0000 的反码），天然代表数字 0！',
+          '<strong>优先级顺序</strong>：<span class="mono text-sky-400">I9′ > I8′ > … > I1′</span>。同样是低电平 0 代表按下，只认最大的老大哥。',
+          '<strong>反码输出</strong>：例如按下 7 号键（<span class="mono text-sky-400">I7′=0</span>），7 的 8421 码是 0111，芯片输出它的反码 <span class="mono text-sky-400">Y3′Y2′Y1′Y0′ = 1000</span>。'
+        ],
+        formula: "输入 I9'~I1' (低有效) ➔ 输出 4位 8421 BCD 反码 Y3'Y2'Y1'Y0'"
+      },
+      '74HC138': {
+        name: '74HC138（3线-8线二进制译码器）',
+        nickname: '“指哪打哪的最小项点名器”',
+        summary: '编码器的逆过程！左边输入 3 位二进制地址（A2 A1 A0），右边 8 个房间（Y0′~Y7′）里对应编号的那一个变成 0（低电平选中），其余 7 个全保持 1。',
+        rules: [
+          '<strong>开机三条件（缺一不可）</strong>：必须满足 <span class="mono text-emerald-400">S1 = 1</span> 且 <span class="mono text-sky-400">S2′ = 0、S3′ = 0</span> 芯片才干活；否则全部输出锁死为 1。',
+          '<strong>最小项发生器</strong>：第 i 个输出脚就是第 i 个最小项的反码 <span class="mono text-sky-400">Yi′ = mi′</span>。',
+          '<strong>万能大题秒杀公式</strong>：考试让你实现 <span class="mono">F = ∑m(1,3,5)</span>，直接把 <span class="mono text-sky-400">Y1′, Y3′, Y5′</span> 拉进一个<strong>与非门</strong>，出来就是 F！'
+        ],
+        formula: "Yi' = ~mi (当 S1=1, S2'=0, S3'=0) | 配合与非门可生成任意逻辑函数"
+      },
+      '74HC42': {
+        name: '74HC42（4线-10线二-十进制译码器）',
+        nickname: '“自带防伪安检的十进制点名器”',
+        summary: '接收 4 位 8421 BCD 码（A3 A2 A1 A0），在 10 个输出端（Y0′~Y9′）中点名对应的一路输出 0。它没有专门的使能端，但自带“伪码拒绝”特技！',
+        rules: [
+          '<strong>0~9 正常点名</strong>：当输入 <span class="mono text-sky-400">0000 ~ 1001</span>（0~9）时，对应的 <span class="mono text-sky-400">Y0′ ~ Y9′</span> 唯一变成低电平 0。',
+          '<strong>10~15 伪码全面拒收（核心考点！）</strong>：当输入 <span class="mono text-rose-400">1010 ~ 1111</span>（十进制 10~15，不属于合法 BCD 码）时，芯片自动识别为非法伪码，<strong>Y0′~Y9′ 全部输出高电平 1（全都不选中）</strong>！',
+          '<strong>隐藏玩法</strong>：把最高位 A3 当作使能端用，就能把 74HC42 当成带使能的 3线-8线译码器！'
+        ],
+        formula: "0 ≤ A3A2A1A0 ≤ 9 时 Yk'=0；10 ≤ 输入 ≤ 15 时 Y0'~Y9' 全为 1 (伪码拒绝)"
+      },
+      '7448': {
+        name: '7448（BCD - 七段数码管显示译码器）',
+        nickname: '“让冷冰冰的 01 代码点亮数字的魔术师”',
+        summary: '把 4 位 8421 BCD 码（A3 A2 A1 A0）转换成驱动七段共阴极数码管的 7 路高电平有效笔段信号（Ya ~ Yg），并配备强大的试灯、灭灯和消隐控制端。',
+        rules: [
+          '<strong>高电平有效驱动（共阴极）</strong>：7448 输出 <span class="mono text-emerald-400">Ya~Yg 为 1 时点亮灯段</span>，数码管公共端必须接地（GND）。',
+          '<strong>三大控制端优先级（必背！）</strong>：<br>1️⃣ <span class="mono text-rose-400">BI′/RBO′ = 0（灭灯老大）</span>：不管其他脚是啥，数码管<strong>强制全灭</strong>！<br>2️⃣ <span class="mono text-amber-400">LT′ = 0（试灯老二，需 BI′=1）</span>：无视输入代码，<strong>7 段全亮显示“8”</strong>，用来检查有没有坏灯！<br>3️⃣ <span class="mono text-sky-400">RBI′ = 0（动态灭零老三）</span>：只有当输入恰好是 <span class="mono">0000</span> 时，自动把数码管熄灭（比如把“005.2”高位的无效零熄灭变成“  5.2”）；若输入是 1~9 则正常显示！'
+        ],
+        formula: "优先级：灭灯 BI'=0 (全灭) > 试灯 LT'=0 (全亮8) > 灭零 RBI'=0 & 输入0000 (消隐)"
+      },
+      '74HC139': {
+        name: '74HC139（双2线-4线译码器）',
+        nickname: '"一芯两用的双子星译码器"',
+        summary: '一片芯片内部集成两个完全独立、各自带使能端的 2线-4线译码器，相当于两片"迷你138"。每半边输入 2 位地址，4 路低电平有效输出中选中的一路变 0。',
+        rules: [
+          '<strong>双半片彻底独立</strong>：半片1（1G′、1A1、1A0、1Y0′~1Y3′）与半片2（2G′、2A1…）互不干扰，可以一个做译码、另一个做数据分配器同时干活！',
+          '<strong>使能即"总闸"</strong>：某半片的 G′=1 时，该半片 4 路输出全部锁死为 1；G′=0 才按地址正常点名。',
+          '<strong>经典扩展玩法（必考）</strong>：把高位地址接半片1的 G′、取反后接半片2的 G′，两个半片输出并联（线与），立刻扩展成 3线-8线译码器！'
+        ],
+        formula: "Yi' = ~(mi · G)（每半片独立：G'=0 使能，G'=1 该半片全输出 1）"
+      },
+      '74HC4511': {
+        name: '74HC4511（BCD-七段锁存/译码/驱动器）',
+        nickname: '"带记忆功能的数码管管家"',
+        summary: '在译码功能之外多了"锁存"（LE）与"灭灯"（BL′）能力，输出高电平有效，直接驱动共阴极数码管。输入 10~15 伪码时自动消隐（全灭）。',
+        rules: [
+          '<strong>控制端优先级（必背！）</strong>：LT′=0 试灯全亮"8" ＞ BL′=0 强制灭灯 ＞ LE=1 锁存（输出冻结在锁存时刻的数据，改输入也不理）＞ 正常译码。',
+          '<strong>锁存精髓（LE，高电平有效！）</strong>：LE=0 时输出实时跟随输入变化；LE 置 1 的瞬间数据被"拍照存档"，之后随便翻动输入，数码管纹丝不动！',
+          '<strong>与 7448 的区别（高频考点）</strong>：输入 1010~1111 时，7448 会显示特殊符号，而 4511 直接伪码消隐全黑——两者这一点必须分清！'
+        ],
+        formula: "LT'=0 全亮8 > BL'=0 全灭 > LE=1 锁存保持 > 0~9 正常译码；10~15 伪码消隐"
+      },
+      '74HC151': {
+        name: '74HC151（8选1数据选择器）',
+        nickname: '"8进1出的旋转波段开关"',
+        summary: '根据 3 位地址 CBA 从 D0~D7 八路数据中"点播"一路送到输出 Y，同时给出互补反相输出 W（永远等于 Y 的反），地址接计数器可自动轮巡 8 路。',
+        rules: [
+          '<strong>点播逻辑</strong>：CBA=101 就是选 D5，且 <span class="mono text-sky-400">Y = D5、W = D5反</span>——Y 与 W 永远互补，做逻辑运算直接省一个非门！',
+          '<strong>使能端 E′</strong>：E′=1 芯片"哑火"，Y 恒为 0、W 恒为 1（注意 151 是图腾柱输出，禁止态是 0 而不是高阻）。',
+          '<strong>万能函数发生器（必考大题）</strong>：把 D0~D7 按真值表接 0/1，地址接变量 A2A1A0，一片 151 就能实现任意 3 变量逻辑函数！'
+        ],
+        formula: "Y = D(CBA)（E'=0 时）；W = Y′；E'=1 时 Y=0、W=1"
+      },
+      '74HC153': {
+        name: '74HC153（双4选1数据选择器）',
+        nickname: '"共享频道旋钮的双路点播台"',
+        summary: '一片芯片集成两个 4选1 选择器：数据输入各自独立（1C0~1C3 / 2C0~2C3），但地址端 BA 由两路共享，一个旋钮同时给两路换台。',
+        rules: [
+          '<strong>地址共享、数据独立</strong>：BA=10 时，1Y 输出 1C2、2Y 输出 2C2——两路永远选中"同一编号"的频道，天然适合两位 BCD 同步选通！',
+          '<strong>使能各自为政</strong>：1G′、2G′ 独立控制，某路 G′=1 该路输出锁死为 0，另一路照常工作。',
+          '<strong>扩展玩法</strong>：把使能端当第 3 个变量输入可实现 3 变量函数；两半片输出经组合还能拼出 8选1（高位地址区分上下半区）！'
+        ],
+        formula: "1Y = 1C(BA)（1G'=0）；2Y = 2C(BA)（2G'=0）；地址 BA 两路共享"
+      },
+      '74HC157': {
+        name: '74HC157（四2选1数据选择器）',
+        nickname: '"四联同步拨动开关"',
+        summary: '内部 4 个 2选1 选择器打包：共享选择端 S 与使能 G′，S 拨到哪边，四路数据就整体同步切换，是 4 位总线二选一的标配芯片。',
+        rules: [
+          '<strong>总线级整体切换</strong>：S=0 时 4 路 Y 全部输出 A 组（1A~4A）；S=1 时整体切到 B 组——不是各选各的，是"一刀切"！',
+          '<strong>无反相输出</strong>：Y = 选中的那一路原样输出（不像 151 还有 W 反相端）；G′=1 时四路 Y 全部强制为 0。',
+          '<strong>经典应用</strong>：两套 4 位数据显示切换、寄存器数据通路选择；配合取反可拼出完整的多位二选一数据链路。'
+        ],
+        formula: "Yi = S ? Bi : Ai（G'=0 时）；G'=1 时 Yi 全为 0；S 四路共享"
+      },
+      '74HC283': {
+        name: '74HC283（4位超前进位全加器）',
+        nickname: '"带快速进位通道的算术引擎"',
+        summary: '一次完成两组 4 位二进制数 A3~A0 与 B3~B0 的加法（含低位进位 Cin），输出 4 位和 S3~S0 与向高位的进位 Cout，多片级联可扩到 8 位、16 位。',
+        rules: [
+          '<strong>逐位竖式加法</strong>：每位满足 <span class="mono text-sky-400">Si = Ai ⊕ Bi ⊕ Ci</span>，进位 <span class="mono text-sky-400">Ci+1 = AiBi + Ci(Ai⊕Bi)</span>，和手工竖式完全一致！',
+          '<strong>Cout 的两种含义（必考）</strong>：无符号加法里 Cout=1 表示"和超过 15 溢出"；补码带符号运算里 Cout 直接丢弃，用双高位符号位判溢出。',
+          '<strong>减法彩蛋</strong>：B 输入逐位接反相器 + Cin=1，同一片芯片立刻变 4 位减法器（A + B反 + 1 = A − B）！'
+        ],
+        formula: "Si = Ai ⊕ Bi ⊕ Ci；C(i+1) = AiBi + Ci(Ai ⊕ Bi)；Cout 即 C4"
+      },
+      '74HC85': {
+        name: '74HC85（4位数值比较器）',
+        nickname: '"从高位逐位掰手腕的裁判"',
+        summary: '比较两组 4 位二进制数 A 与 B 的大小，三个输出端（A>B、A=B、A<B）有且只有一个为 1；还带三个级联输入端，可多片串联扩展成 8 位、12 位比较器。',
+        rules: [
+          '<strong>高位说了算</strong>：从最高位 A3 vs B3 开始比，谁先出现"1 大 0 小"立刻分胜负，低位再大也翻不了盘——和比较十进制数一个道理！',
+          '<strong>四位全平看级联（易错！）</strong>：A3~A0 完全相等时，结果直接"抄"级联输入，所以单片使用必须给 A=B in 接 1、其余接 0！',
+          '<strong>级联扩展（必考）</strong>：低位片的三个输出接高位片的三个级联输入——低位先定输赢，全平时才轮到高位片拍板。'
+        ],
+        formula: "从 A3B3 逐位向低位比较；四位全相等时，输出 = 级联输入状态"
+      }
+    };
+
+    function selectChip(chipId) {
+      currentChip = chipId;
+      document.querySelectorAll('.chip-tab').forEach(btn => {
+        btn.classList.toggle('active', btn.id === `tab-${chipId}`);
+      });
+      renderControls();
+      renderTheoryPanel();
+    }
+
+    // 折叠/展开生活化记忆口诀面板
+    function toggleRhyme() {
+      const panel = document.getElementById('rhymePanel');
+      const arrow = document.getElementById('rhymeArrow');
+      panel.classList.toggle('hidden');
+      arrow.textContent = panel.classList.contains('hidden') ? '展开 ▾' : '收起 ▴';
+    }
+
+    function renderTheoryPanel() {
+      const doc = chipDocs[currentChip];
+      const panel = document.getElementById('theoryPanel');
+      panel.innerHTML = `
+        <div>
+          <div class="inline-block px-2.5 py-1 rounded-md bg-sky-500/15 border border-sky-500/30 text-sky-300 text-xs font-semibold mb-2">
+            ${doc.nickname}
+          </div>
+          <h2 class="text-lg font-bold text-white mb-2">${doc.name}</h2>
+          <p class="text-slate-300 text-xs sm:text-sm leading-relaxed mb-4 bg-slate-950/70 p-3 rounded-xl border border-slate-800">
+            ${doc.summary}
+          </p>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-sky-400 mb-2.5 flex items-center gap-1.5">
+            <span>🎯 核心工作机制与秒杀考点</span>
+          </h3>
+          <ul class="space-y-2.5 text-xs sm:text-sm text-slate-300">
+            ${doc.rules.map(r => `<li class="bg-slate-950/50 p-2.5 rounded-lg border border-slate-800/80 leading-relaxed">${r}</li>`).join('')}
+          </ul>
+        </div>
+        <div class="mt-4 pt-3 border-t border-slate-800">
+          <div class="text-xs text-slate-400 mb-1">核心逻辑方程速记：</div>
+          <div class="mono text-xs bg-slate-950 text-cyan-300 p-2.5 rounded-lg border border-cyan-500/30 break-all">
+            ${doc.formula}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderControls() {
+      const ctrlBox = document.getElementById('inputControls');
+      const presetBox = document.getElementById('quickPresets');
+      ctrlBox.innerHTML = '';
+      presetBox.innerHTML = '';
+
+      if (currentChip === '74HC148') {
+        const st = chipStates['74HC148'];
+        // 使能端按钮
+        ctrlBox.innerHTML += createPinButton("S' (使能)", st.S_bar, "toggle148('S')", st.S_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        // I7' 到 I0' 从高优先级到低优先级排列
+        for (let i = 7; i >= 0; i--) {
+          ctrlBox.innerHTML += createPinButton(`I${i}'`, st.I_bar[i], `toggle148(${i})`, st.I_bar[i] === 0 ? 'low-active' : 'off');
+        }
+        presetBox.innerHTML = `
+          <button onclick="preset148('none')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">全松开 (无输入)</button>
+          <button onclick="preset148('compete')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">演示优先级抢占</button>
+          <button onclick="preset148('disable')" class="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800/70 text-rose-300 border border-rose-600/40">S'=1 芯片关机</button>
+        `;
+      } else if (currentChip === '74HC147') {
+        const st = chipStates['74HC147'];
+        for (let i = 9; i >= 1; i--) {
+          ctrlBox.innerHTML += createPinButton(`I${i}'`, st.I_bar[i], `toggle147(${i})`, st.I_bar[i] === 0 ? 'low-active' : 'off');
+        }
+        presetBox.innerHTML = `
+          <button onclick="preset147('zero')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">全松开 (隐含数字0)</button>
+          <button onclick="preset147('compete')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">I8' 与 I2' 同时按</button>
+        `;
+      } else if (currentChip === '74HC138') {
+        const st = chipStates['74HC138'];
+        ctrlBox.innerHTML += createPinButton("S1", st.S1, "toggleKey('74HC138','S1')", st.S1 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("S2'", st.S2_bar, "toggleKey('74HC138','S2_bar')", st.S2_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("S3'", st.S3_bar, "toggleKey('74HC138','S3_bar')", st.S3_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        ctrlBox.innerHTML += createPinButton("A2 (高位)", st.A2, "toggleKey('74HC138','A2')", st.A2 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A1", st.A1, "toggleKey('74HC138','A1')", st.A1 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A0 (低位)", st.A0, "toggleKey('74HC138','A0')", st.A0 === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset138(1)" class="text-xs px-2.5 py-1 rounded bg-emerald-900/50 hover:bg-emerald-800/70 text-emerald-300 border border-emerald-600/40">正常使能开启</button>
+          <button onclick="preset138(0)" class="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800/70 text-rose-300 border border-rose-600/40">破坏使能 (芯片锁死)</button>
+        `;
+      } else if (currentChip === '74HC42') {
+        const st = chipStates['74HC42'];
+        ctrlBox.innerHTML += createPinButton("A3 (8)", st.A3, "toggleKey('74HC42','A3')", st.A3 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A2 (4)", st.A2, "toggleKey('74HC42','A2')", st.A2 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A1 (2)", st.A1, "toggleKey('74HC42','A1')", st.A1 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A0 (1)", st.A0, "toggleKey('74HC42','A0')", st.A0 === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset42(5)" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">合法BCD码 (0101=5)</button>
+          <button onclick="preset42(13)" class="text-xs px-2.5 py-1 rounded bg-rose-900/60 hover:bg-rose-800/80 text-rose-300 border border-rose-600/40">输入伪码 (1101=13 拒收!)</button>
+        `;
+      } else if (currentChip === '7448') {
+        const st = chipStates['7448'];
+        ctrlBox.innerHTML += createPinButton("BI'/RBO'(灭灯)", st.BI_RBO_bar, "toggleKey('7448','BI_RBO_bar')", st.BI_RBO_bar === 0 ? 'danger-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("LT'(试灯)", st.LT_bar, "toggleKey('7448','LT_bar')", st.LT_bar === 0 ? 'warn-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("RBI'(灭零)", st.RBI_bar, "toggleKey('7448','RBI_bar')", st.RBI_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        ctrlBox.innerHTML += createPinButton("A3", st.A3, "toggleKey('7448','A3')", st.A3 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A2", st.A2, "toggleKey('7448','A2')", st.A2 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A1", st.A1, "toggleKey('7448','A1')", st.A1 === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A0", st.A0, "toggleKey('7448','A0')", st.A0 === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset7448('normal8')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">正常显示数字</button>
+          <button onclick="preset7448('lt')" class="text-xs px-2.5 py-1 rounded bg-amber-900/60 hover:bg-amber-800/80 text-amber-300 border border-amber-500/40">LT'=0 试灯全亮8</button>
+          <button onclick="preset7448('rbi0')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-500/40">RBI'=0 动态消隐零</button>
+          <button onclick="preset7448('bi')" class="text-xs px-2.5 py-1 rounded bg-rose-900/60 hover:bg-rose-800/80 text-rose-300 border border-rose-500/40">BI'=0 强制灭灯</button>
+        `;
+      } else if (currentChip === '74HC139') {
+        const st = chipStates['74HC139'];
+        st.halves.forEach((h, hn) => {
+          const tag = hn + 1;
+          ctrlBox.innerHTML += createPinButton(`${tag}G' (使能)`, h.G_bar, `toggle139(${hn},'G_bar')`, h.G_bar === 0 ? 'low-active' : 'off');
+          ctrlBox.innerHTML += createPinButton(`${tag}A1`, h.A1, `toggle139(${hn},'A1')`, h.A1 === 1 ? 'high-active' : 'off');
+          ctrlBox.innerHTML += createPinButton(`${tag}A0`, h.A0, `toggle139(${hn},'A0')`, h.A0 === 1 ? 'high-active' : 'off');
+          if (hn === 0) ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        });
+        presetBox.innerHTML = `
+          <button onclick="preset139('indep')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">两半片独立译码</button>
+          <button onclick="preset139('off2')" class="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800/70 text-rose-300 border border-rose-600/40">2G'=1 禁止半片2</button>
+          <button onclick="preset139('reset')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">恢复默认</button>
+        `;
+      } else if (currentChip === '74HC4511') {
+        const st = chipStates['74HC4511'];
+        ctrlBox.innerHTML += createPinButton("LT'(试灯)", st.LT_bar, "toggle4511('LT_bar')", st.LT_bar === 0 ? 'warn-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("BL'(灭灯)", st.BL_bar, "toggle4511('BL_bar')", st.BL_bar === 0 ? 'danger-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("LE(锁存)", st.LE, "toggle4511('LE')", st.LE === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        ['A3', 'A2', 'A1', 'A0'].forEach(k => {
+          ctrlBox.innerHTML += createPinButton(k, st[k], `toggle4511('${k}')`, st[k] === 1 ? 'high-active' : 'off');
+        });
+        presetBox.innerHTML = `
+          <button onclick="preset4511('normal')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">正常译码显示</button>
+          <button onclick="preset4511('lt')" class="text-xs px-2.5 py-1 rounded bg-amber-900/60 hover:bg-amber-800/80 text-amber-300 border border-amber-500/40">LT'=0 试灯全亮8</button>
+          <button onclick="preset4511('blank')" class="text-xs px-2.5 py-1 rounded bg-rose-900/60 hover:bg-rose-800/80 text-rose-300 border border-rose-500/40">BL'=0 强制灭灯</button>
+          <button onclick="preset4511('latch')" class="text-xs px-2.5 py-1 rounded bg-emerald-900/60 hover:bg-emerald-800/80 text-emerald-300 border border-emerald-500/40">锁存 2 后改输入 7</button>
+        `;
+      } else if (currentChip === '74HC151') {
+        const st = chipStates['74HC151'];
+        ctrlBox.innerHTML += createPinButton("E' (使能)", st.E_bar, "toggleKey('74HC151','E_bar')", st.E_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        ctrlBox.innerHTML += createPinButton("C (高位)", st.C, "toggleKey('74HC151','C')", st.C === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("B", st.B, "toggleKey('74HC151','B')", st.B === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A (低位)", st.A, "toggleKey('74HC151','A')", st.A === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        for (let i = 7; i >= 0; i--) {
+          ctrlBox.innerHTML += createPinButton(`D${i}`, st.D[i], `toggleArr('74HC151','D',${i})`, st.D[i] === 1 ? 'high-active' : 'off');
+        }
+        presetBox.innerHTML = `
+          <button onclick="preset151('d0')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">点播 D0 (CBA=000)</button>
+          <button onclick="preset151('d7')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">点播 D7 (CBA=111)</button>
+          <button onclick="preset151('off')" class="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800/70 text-rose-300 border border-rose-600/40">E'=1 芯片禁止</button>
+        `;
+      } else if (currentChip === '74HC153') {
+        const st = chipStates['74HC153'];
+        ctrlBox.innerHTML += createPinButton("1G' (使能1)", st.G1_bar, "toggleKey('74HC153','G1_bar')", st.G1_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("2G' (使能2)", st.G2_bar, "toggleKey('74HC153','G2_bar')", st.G2_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        ctrlBox.innerHTML += createPinButton("B (共享高位)", st.B, "toggleKey('74HC153','B')", st.B === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("A (共享低位)", st.A, "toggleKey('74HC153','A')", st.A === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        for (let i = 3; i >= 0; i--) ctrlBox.innerHTML += createPinButton(`1C${i}`, st.D1[i], `toggleArr('74HC153','D1',${i})`, st.D1[i] === 1 ? 'high-active' : 'off');
+        for (let i = 3; i >= 0; i--) ctrlBox.innerHTML += createPinButton(`2C${i}`, st.D2[i], `toggleArr('74HC153','D2',${i})`, st.D2[i] === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset153('both')" class="text-xs px-2.5 py-1 rounded bg-emerald-900/50 hover:bg-emerald-800/70 text-emerald-300 border border-emerald-600/40">双半片同时使能</button>
+          <button onclick="preset153('off2')" class="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800/70 text-rose-300 border border-rose-600/40">2G'=1 只留半片1</button>
+        `;
+      } else if (currentChip === '74HC157') {
+        const st = chipStates['74HC157'];
+        ctrlBox.innerHTML += createPinButton("G' (使能)", st.G_bar, "toggleKey('74HC157','G_bar')", st.G_bar === 0 ? 'low-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("S (选择: 0选A/1选B)", st.S, "toggleKey('74HC157','S')", st.S === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        for (let i = 0; i < 4; i++) ctrlBox.innerHTML += createPinButton(`${i + 1}A`, st.A[i], `toggleArr('74HC157','A',${i})`, st.A[i] === 1 ? 'high-active' : 'off');
+        for (let i = 0; i < 4; i++) ctrlBox.innerHTML += createPinButton(`${i + 1}B`, st.B[i], `toggleArr('74HC157','B',${i})`, st.B[i] === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset157('a')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">S=0 整体选 A 组</button>
+          <button onclick="preset157('b')" class="text-xs px-2.5 py-1 rounded bg-cyan-900/60 hover:bg-cyan-800/80 text-cyan-300 border border-cyan-600/40">S=1 整体切 B 组</button>
+          <button onclick="preset157('off')" class="text-xs px-2.5 py-1 rounded bg-rose-900/50 hover:bg-rose-800/70 text-rose-300 border border-rose-600/40">G'=1 四路全禁</button>
+        `;
+      } else if (currentChip === '74HC283') {
+        const st = chipStates['74HC283'];
+        ctrlBox.innerHTML += createPinButton("Cin (低位进位)", st.Cin, "toggleKey('74HC283','Cin')", st.Cin === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        for (let i = 3; i >= 0; i--) ctrlBox.innerHTML += createPinButton(`A${i}`, st.A[i], `toggleArr('74HC283','A',${i})`, st.A[i] === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">+</span>`;
+        for (let i = 3; i >= 0; i--) ctrlBox.innerHTML += createPinButton(`B${i}`, st.B[i], `toggleArr('74HC283','B',${i})`, st.B[i] === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset283(9,7,0)" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">9 + 7 (溢出演示)</button>
+          <button onclick="preset283(12,5,1)" class="text-xs px-2.5 py-1 rounded bg-emerald-900/50 hover:bg-emerald-800/70 text-emerald-300 border border-emerald-600/40">12 + 5 + Cin=1</button>
+          <button onclick="preset283(6,3,0)" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">6 + 3 (无进位)</button>
+        `;
+      } else if (currentChip === '74HC85') {
+        const st = chipStates['74HC85'];
+        ctrlBox.innerHTML += createPinButton("级联 A>B in", st.gtIn, "toggleKey('74HC85','gtIn')", st.gtIn === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("级联 A=B in", st.eqIn, "toggleKey('74HC85','eqIn')", st.eqIn === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += createPinButton("级联 A<B in", st.ltIn, "toggleKey('74HC85','ltIn')", st.ltIn === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">|</span>`;
+        for (let i = 3; i >= 0; i--) ctrlBox.innerHTML += createPinButton(`A${i}`, st.A[i], `toggleArr('74HC85','A',${i})`, st.A[i] === 1 ? 'high-active' : 'off');
+        ctrlBox.innerHTML += `<span class="text-slate-600 mx-1">?</span>`;
+        for (let i = 3; i >= 0; i--) ctrlBox.innerHTML += createPinButton(`B${i}`, st.B[i], `toggleArr('74HC85','B',${i})`, st.B[i] === 1 ? 'high-active' : 'off');
+        presetBox.innerHTML = `
+          <button onclick="preset85('gt')" class="text-xs px-2.5 py-1 rounded bg-emerald-900/50 hover:bg-emerald-800/70 text-emerald-300 border border-emerald-600/40">A=13 > B=9</button>
+          <button onclick="preset85('lt')" class="text-xs px-2.5 py-1 rounded bg-sky-900/60 hover:bg-sky-800/80 text-sky-300 border border-sky-600/40">A=4 < B=8</button>
+          <button onclick="preset85('eq')" class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700">全相等 (级联A=B拍板)</button>
+          <button onclick="preset85('casc')" class="text-xs px-2.5 py-1 rounded bg-amber-900/60 hover:bg-amber-800/80 text-amber-300 border border-amber-500/40">全等+级联A<B in=1</button>
+        `;
+      }
+    }
+
+    function createPinButton(label, val, onClickStr, styleType) {
+      let colorCls = 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-750';
+      if (styleType === 'low-active') {
+        colorCls = 'bg-sky-500/20 border-sky-400 text-sky-300 shadow-[0_0_12px_rgba(56,189,248,0.35)]';
+      } else if (styleType === 'high-active') {
+        colorCls = 'bg-emerald-500/20 border-emerald-400 text-emerald-300 shadow-[0_0_12px_rgba(52,211,153,0.35)]';
+      } else if (styleType === 'warn-active') {
+        colorCls = 'bg-amber-500/20 border-amber-400 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.35)]';
+      } else if (styleType === 'danger-active') {
+        colorCls = 'bg-rose-500/25 border-rose-400 text-rose-300 shadow-[0_0_12px_rgba(244,63,94,0.35)]';
+      }
+      return `
+        <button onclick="${onClickStr}" class="pin-btn px-2.5 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-1.5 ${colorCls}">
+          <span>${label}:</span>
+          <span class="mono font-bold text-sm">${val}</span>
+        </button>
+      `;
+    }
+
+    function toggle148(target) {
+      const st = chipStates['74HC148'];
+      if (target === 'S') st.S_bar = st.S_bar ? 0 : 1;
+      else st.I_bar[target] = st.I_bar[target] ? 0 : 1;
+      renderControls();
+    }
+
+    function preset148(mode) {
+      const st = chipStates['74HC148'];
+      if (mode === 'none') {
+        st.S_bar = 0;
+        st.I_bar = [1, 1, 1, 1, 1, 1, 1, 1];
+      } else if (mode === 'compete') {
+        st.S_bar = 0;
+        st.I_bar = [1, 0, 1, 1, 0, 1, 0, 1]; // I6', I4', I1' 同时为0，I6'胜出
+      } else if (mode === 'disable') {
+        st.S_bar = 1;
+      }
+      renderControls();
+    }
+
+    function toggle147(idx) {
+      const st = chipStates['74HC147'];
+      st.I_bar[idx] = st.I_bar[idx] ? 0 : 1;
+      renderControls();
+    }
+
+    function preset147(mode) {
+      const st = chipStates['74HC147'];
+      if (mode === 'zero') {
+        st.I_bar = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1];
+      } else {
+        st.I_bar = [1, 1, 0, 1, 1, 1, 1, 1, 0, 1]; // I8' 和 I2' 同时为0
+      }
+      renderControls();
+    }
+
+    function toggleKey(chip, key) {
+      chipStates[chip][key] = chipStates[chip][key] ? 0 : 1;
+      renderControls();
+    }
+
+    function preset138(enable) {
+      const st = chipStates['74HC138'];
+      if (enable) {
+        st.S1 = 1; st.S2_bar = 0; st.S3_bar = 0;
+      } else {
+        st.S1 = 0; st.S2_bar = 1; st.S3_bar = 0;
+      }
+      renderControls();
+    }
+
+    function preset42(num) {
+      const st = chipStates['74HC42'];
+      st.A3 = (num >> 3) & 1;
+      st.A2 = (num >> 2) & 1;
+      st.A1 = (num >> 1) & 1;
+      st.A0 = num & 1;
+      renderControls();
+    }
+
+    function preset7448(mode) {
+      const st = chipStates['7448'];
+      if (mode === 'normal8') {
+        st.BI_RBO_bar = 1; st.LT_bar = 1; st.RBI_bar = 1;
+        st.A3 = 0; st.A2 = 0; st.A1 = 1; st.A0 = 1; // 显示 3
+      } else if (mode === 'lt') {
+        st.BI_RBO_bar = 1; st.LT_bar = 0; st.RBI_bar = 1;
+      } else if (mode === 'rbi0') {
+        st.BI_RBO_bar = 1; st.LT_bar = 1; st.RBI_bar = 0;
+        st.A3 = 0; st.A2 = 0; st.A1 = 0; st.A0 = 0; // 输入0000且RBI'=0 -> 灭零
+      } else if (mode === 'bi') {
+        st.BI_RBO_bar = 0;
+      }
+      renderControls();
+    }
+
+    // ============ 新增 7 款芯片的交互函数 ============
+
+    // 通用：翻转某芯片内的数组元素（数据输入 / 加数 / 比较数）
+    function toggleArr(chip, key, idx) {
+      const arr = chipStates[chip][key];
+      arr[idx] = arr[idx] ? 0 : 1;
+      renderControls();
+    }
+
+    // 74HC139：翻转某半片的 G_bar / A1 / A0
+    function toggle139(hn, key) {
+      const h = chipStates['74HC139'].halves[hn];
+      h[key] = h[key] ? 0 : 1;
+      renderControls();
+    }
+
+    function preset139(mode) {
+      const st = chipStates['74HC139'];
+      if (mode === 'indep') {
+        st.halves = [{ G_bar: 0, A1: 1, A0: 0 }, { G_bar: 0, A1: 0, A0: 1 }];
+      } else if (mode === 'off2') {
+        st.halves[1].G_bar = 1;
+      } else if (mode === 'reset') {
+        st.halves = [{ G_bar: 0, A1: 1, A0: 0 }, { G_bar: 0, A1: 0, A0: 1 }];
+      }
+      renderControls();
+    }
+
+    // 74HC4511：LE 置 1 的瞬间锁存当前输入
+    function toggle4511(key) {
+      const st = chipStates['74HC4511'];
+      if (key === 'LE') {
+        st.LE = st.LE ? 0 : 1;
+        if (st.LE === 1) {
+          st.latchedNum = (st.A3 << 3) | (st.A2 << 2) | (st.A1 << 1) | st.A0;
+        }
+      } else {
+        st[key] = st[key] ? 0 : 1;
+      }
+      renderControls();
+    }
+
+    function preset4511(mode) {
+      const st = chipStates['74HC4511'];
+      if (mode === 'normal') {
+        st.LT_bar = 1; st.BL_bar = 1; st.LE = 0;
+        st.A3 = 0; st.A2 = 1; st.A1 = 0; st.A0 = 1; // 显示 5
+      } else if (mode === 'lt') {
+        st.LT_bar = 0; st.BL_bar = 1;
+      } else if (mode === 'blank') {
+        st.LT_bar = 1; st.BL_bar = 0;
+      } else if (mode === 'latch') {
+        // 先让输入=2 且 LE=0，再锁存 2，最后把输入改成 7 —— 数码管仍显示 2
+        st.LT_bar = 1; st.BL_bar = 1; st.LE = 0;
+        st.A3 = 0; st.A2 = 0; st.A1 = 1; st.A0 = 0;
+        st.LE = 1; st.latchedNum = 2;
+        st.A3 = 0; st.A2 = 1; st.A1 = 1; st.A0 = 1;
+      }
+      renderControls();
+    }
+
+    function preset151(mode) {
+      const st = chipStates['74HC151'];
+      if (mode === 'd0') { st.C = 0; st.B = 0; st.A = 0; st.E_bar = 0; }
+      else if (mode === 'd7') { st.C = 1; st.B = 1; st.A = 1; st.E_bar = 0; }
+      else if (mode === 'off') { st.E_bar = 1; }
+      renderControls();
+    }
+
+    function preset153(mode) {
+      const st = chipStates['74HC153'];
+      if (mode === 'both') { st.G1_bar = 0; st.G2_bar = 0; }
+      else if (mode === 'off2') { st.G2_bar = 1; }
+      renderControls();
+    }
+
+    function preset157(mode) {
+      const st = chipStates['74HC157'];
+      if (mode === 'a') { st.S = 0; st.G_bar = 0; }
+      else if (mode === 'b') { st.S = 1; st.G_bar = 0; }
+      else if (mode === 'off') { st.G_bar = 1; }
+      renderControls();
+    }
+
+    function preset283(a, b, cin) {
+      const st = chipStates['74HC283'];
+      st.A = [a & 1, (a >> 1) & 1, (a >> 2) & 1, (a >> 3) & 1];
+      st.B = [b & 1, (b >> 1) & 1, (b >> 2) & 1, (b >> 3) & 1];
+      st.Cin = cin;
+      renderControls();
+    }
+
+    function preset85(mode) {
+      const st = chipStates['74HC85'];
+      if (mode === 'gt') { st.A = [1, 0, 1, 1]; st.B = [1, 0, 0, 1]; st.gtIn = 0; st.eqIn = 1; st.ltIn = 0; }      // 13 vs 9
+      else if (mode === 'lt') { st.A = [0, 0, 1, 0]; st.B = [0, 0, 0, 1]; st.gtIn = 0; st.eqIn = 1; st.ltIn = 0; } // 4 vs 8
+      else if (mode === 'eq') { st.A = [0, 1, 1, 0]; st.B = [0, 1, 1, 0]; st.gtIn = 0; st.eqIn = 1; st.ltIn = 0; } // 6 vs 6
+      else if (mode === 'casc') { st.A = [0, 1, 1, 0]; st.B = [0, 1, 1, 0]; st.gtIn = 0; st.eqIn = 0; st.ltIn = 1; } // 全等+级联判A<B
+      renderControls();
+    }
+
+    const canvas = document.getElementById('simCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // 逻辑坐标系固定 760×450（全部绘制代码沿用原坐标），背板按 DPR 放大以保证清晰
+    const LOGIC_W = 760, LOGIC_H = 450;
+    function fitCanvas() {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const rect = canvas.getBoundingClientRect();
+      const cssW = rect.width > 0 ? rect.width : LOGIC_W;
+      const w = Math.max(1, Math.round(cssW * dpr));
+      const h = Math.max(1, Math.round(w * LOGIC_H / LOGIC_W));
+      if (canvas.width !== w || canvas.height !== h) { canvas.width = w; canvas.height = h; }
+      const scale = w / LOGIC_W;
+      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    }
+    fitCanvas();
+    if (window.ResizeObserver) new ResizeObserver(fitCanvas).observe(canvas);
+    else addEventListener('resize', fitCanvas);
+
+    // 绘制带动态发光粒子的导线
+    function drawSignalWire(x1, y1, x2, y2, mode = 'idle') {
+      // mode: 'idle' (灰), 'low-active' (冰蓝0激活), 'high-active' (翠绿1激活), 'masked' (琥珀黄被屏蔽)
+      let stroke = '#334155';
+      let pColor = '#38bdf8';
+      let width = 2;
+
+      if (mode === 'low-active') {
+        stroke = '#0ea5e9';
+        pColor = '#7dd3fc';
+        width = 3.2;
+      } else if (mode === 'high-active') {
+        stroke = '#10b981';
+        pColor = '#6ee7b7';
+        width = 3.2;
+      } else if (mode === 'masked') {
+        stroke = '#f59e0b';
+        pColor = '#fcd34d';
+        width = 2.2;
+      } else if (mode === 'selected') {
+        stroke = '#22d3ee';
+        pColor = '#a5f3fc';
+        width = 3.2;
+      }
+
+      ctx.save();
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth = width;
+      if (mode === 'masked') ctx.setLineDash([5, 4]);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.restore();
+
+      // 绘制流动粒子
+      if (mode === 'low-active' || mode === 'high-active' || mode === 'selected') {
+        const dist = Math.hypot(x2 - x1, y2 - y1);
+        const step = 34;
+        const count = Math.max(1, Math.floor(dist / step));
+        ctx.fillStyle = pColor;
+        for (let i = 0; i < count; i++) {
+          const t = ((i * step + animPhase) % dist) / dist;
+          const px = x1 + (x2 - x1) * t;
+          const py = y1 + (y2 - y1) * t;
+          ctx.beginPath();
+          ctx.arc(px, py, 3.2, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+    }
+
+    // 绘制芯片外壳与内部标题
+    function drawICBox(x, y, w, h, title, subtitle, isEnabled = true) {
+      ctx.save();
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = isEnabled ? '#38bdf8' : '#f43f5e';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 12);
+      ctx.fill();
+      ctx.stroke();
+
+      // 顶部芯片半圆缺口
+      ctx.beginPath();
+      ctx.arc(x + w / 2, y, 12, 0, Math.PI);
+      ctx.strokeStyle = '#475569';
+      ctx.stroke();
+
+      // 芯片型号与副标题
+      ctx.fillStyle = '#f8fafc';
+      ctx.font = 'bold 19px "JetBrains Mono", monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText(title, x + w / 2, y + 32);
+
+      ctx.fillStyle = isEnabled ? '#38bdf8' : '#fb7185';
+      ctx.font = '12px Inter, sans-serif';
+      ctx.fillText(subtitle, x + w / 2, y + 52);
+      ctx.restore();
+    }
+
+    // 绘制低电平有效的小圆圈 (Inversion Bubble)
+    function drawBubble(x, y, isLowActiveNow = false) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+      ctx.fillStyle = isLowActiveNow ? '#0ea5e9' : '#0f172a';
+      ctx.strokeStyle = isLowActiveNow ? '#7dd3fc' : '#64748b';
+      ctx.lineWidth = 1.8;
+      ctx.fill();
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // 状态卡：仅当内容变化时才写 DOM，并复用节点（原实现每帧重建 innerHTML）
+    let lastStatusSig = '';
+    let statusNodes = [];
+    function updateStatusCards(cards) {
+      const sig = cards.map(c => c.label + '\u0001' + c.value + '\u0001' + c.color + '\u0001' + c.border).join('\u0002');
+      if (sig === lastStatusSig) return;
+      lastStatusSig = sig;
+      const box = document.getElementById('liveStatusBanner');
+      if (statusNodes.length !== cards.length || !box.contains(statusNodes[0])) {
+        box.innerHTML = cards.map(() => `
+        <div class="bg-slate-950/90 border rounded-xl p-3 border-l-4">
+          <div class="text-xs text-slate-400"></div>
+          <div class="mono text-sm sm:text-base font-bold mt-0.5"></div>
+        </div>
+      `).join('');
+        statusNodes = Array.prototype.slice.call(box.children);
+      }
+      for (let i = 0; i < cards.length; i++) {
+        const c = cards[i], el = statusNodes[i];
+        el.className = 'bg-slate-950/90 border rounded-xl p-3 border-l-4 ' + c.border;
+        el.children[0].textContent = c.label;
+        const v = el.children[1];
+        if (v.className !== 'mono text-sm sm:text-base font-bold mt-0.5 ' + c.color) {
+          v.className = 'mono text-sm sm:text-base font-bold mt-0.5 ' + c.color;
+        }
+        if (v.textContent !== c.value) v.textContent = c.value;
+      }
+    }
+
+    // 1. 渲染 74HC148
+    function render74HC148() {
+      const st = chipStates['74HC148'];
+      const enabled = (st.S_bar === 0);
+
+      // 寻找最高优先级输入 (I7' -> I0')
+      let winner = -1;
+      if (enabled) {
+        for (let i = 7; i >= 0; i--) {
+          if (st.I_bar[i] === 0) {
+            winner = i;
+            break;
+          }
+        }
+      }
+
+      // 计算输出反码 Y2' Y1' Y0'、Yex'、Ys'
+      let Y2_bar = 1, Y1_bar = 1, Y0_bar = 1;
+      let Yex_bar = 1, Ys_bar = 1;
+
+      if (enabled) {
+        if (winner !== -1) {
+          // 存在有效输入：输出 winner 的 3 位反码
+          Y2_bar = ((winner >> 2) & 1) ? 0 : 1;
+          Y1_bar = ((winner >> 1) & 1) ? 0 : 1;
+          Y0_bar = (winner & 1) ? 0 : 1;
+          Yex_bar = 0; // 有人按键
+          Ys_bar = 1;
+        } else {
+          // 芯片工作但无人按键
+          Y2_bar = 1; Y1_bar = 1; Y0_bar = 1;
+          Yex_bar = 1;
+          Ys_bar = 0; // 通知下一片接力
+        }
+      }
+
+      drawICBox(250, 45, 250, 365, '74HC148', enabled ? '优先编码器 (S′=0 工作中)' : 'S′=1 芯片已关机锁死', enabled);
+
+      // 绘制使能端 S'
+      const sy = 85;
+      drawSignalWire(95, sy, 245, sy, st.S_bar === 0 ? 'low-active' : 'idle');
+      drawBubble(245, sy, st.S_bar === 0);
+      ctx.fillStyle = st.S_bar === 0 ? '#38bdf8' : '#fb7185';
+      ctx.font = 'bold 13px "JetBrains Mono"';
+      ctx.fillText(`S'=${st.S_bar}`, 40, sy + 4);
+      ctx.fillStyle = '#94a3b8';
+      ctx.fillText(`S'`, 260, sy + 4);
+
+      // 绘制 I7' ~ I0' 输入引脚
+      for (let idx = 0; idx < 8; idx++) {
+        const i = 7 - idx; // 从上往下画 I7' 到 I0'
+        const py = 128 + idx * 35;
+        const val = st.I_bar[i];
+        let wireMode = 'idle';
+        if (val === 0) {
+          wireMode = (enabled && winner === i) ? 'low-active' : 'masked';
+        }
+        drawSignalWire(95, py, 245, py, wireMode);
+        drawBubble(245, py, wireMode === 'low-active');
+
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = wireMode === 'low-active' ? '#38bdf8' : (wireMode === 'masked' ? '#fbbf24' : '#64748b');
+        ctx.fillText(`I${i}'=${val}`, 40, py + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`I${i}'`, 260, py + 4);
+
+        // 在芯片内部画出赢家连接路径或屏蔽锁标记
+        if (enabled && val === 0) {
+          if (winner === i) {
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(290, py);
+            ctx.lineTo(375, 195);
+            ctx.stroke();
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 12px Inter';
+            ctx.fillText('👑 最高优先级胜出', 318, py - 6);
+          } else {
+            ctx.fillStyle = '#f59e0b';
+            ctx.font = '12px Inter';
+            ctx.fillText('🔒 被 I' + winner + '′ 屏蔽', 295, py + 4);
+          }
+        }
+      }
+
+      // 绘制右侧 3 位反码输出 Y2', Y1', Y0'
+      const outs = [
+        { name: "Y2'", val: Y2_bar, orig: (winner !== -1) ? ((winner >> 2) & 1) : 0, y: 145 },
+        { name: "Y1'", val: Y1_bar, orig: (winner !== -1) ? ((winner >> 1) & 1) : 0, y: 195 },
+        { name: "Y0'", val: Y0_bar, orig: (winner !== -1) ? (winner & 1) : 0, y: 245 }
+      ];
+
+      outs.forEach(o => {
+        const isLow = (o.val === 0);
+        drawBubble(505, o.y, isLow);
+        drawSignalWire(510, o.y, 650, o.y, isLow ? 'low-active' : 'idle');
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillText(o.name, 468, o.y + 4);
+        ctx.fillStyle = isLow ? '#38bdf8' : '#94a3b8';
+        ctx.font = 'bold 14px "JetBrains Mono"';
+        ctx.fillText(`${o.name} = ${o.val}`, 658, o.y + 5);
+      });
+
+      // 绘制 Yex' 与 Ys'
+      const flags = [
+        { name: "Yex'", desc: "有人按键标志", val: Yex_bar, y: 315 },
+        { name: "Ys'", desc: "本片空闲接力", val: Ys_bar, y: 365 }
+      ];
+      flags.forEach(f => {
+        const isLow = (f.val === 0);
+        drawBubble(505, f.y, isLow);
+        drawSignalWire(510, f.y, 650, f.y, isLow ? 'low-active' : 'idle');
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillText(f.name, 462, f.y + 4);
+        ctx.fillStyle = isLow ? '#38bdf8' : '#64748b';
+        ctx.font = 'bold 13px "JetBrains Mono"';
+        ctx.fillText(`${f.name}=${f.val} (${f.desc})`, 535, f.y - 8);
+      });
+
+      updateStatusCards([
+        {
+          label: '当前获胜最高优先级输入',
+          value: !enabled ? '芯片禁止 (S′=1)' : (winner === -1 ? '无按键输入 (全为1)' : `I${winner}′ = 0 (十进制 ${winner})`),
+          color: !enabled ? 'text-rose-400' : (winner === -1 ? 'text-slate-400' : 'text-sky-400'),
+          border: !enabled ? 'border-rose-500' : 'border-sky-500'
+        },
+        {
+          label: '编码输出 Y2′ Y1′ Y0′ (反码)',
+          value: `${Y2_bar} ${Y1_bar} ${Y0_bar} ${winner !== -1 ? `(原码 ${7 - ((Y2_bar<<2)|(Y1_bar<<1)|Y0_bar)})` : ''}`,
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        },
+        {
+          label: '标志位 Yex′ / Ys′ 状态',
+          value: `Yex′=${Yex_bar} (${Yex_bar===0?'有输入':'无'}) | Ys′=${Ys_bar} (${Ys_bar===0?'空闲可级联':'忙'})`,
+          color: 'text-emerald-400',
+          border: 'border-emerald-500'
+        }
+      ]);
+    }
+
+    // 2. 渲染 74HC147
+    function render74HC147() {
+      const st = chipStates['74HC147'];
+      let winner = 0; // 若全为1，则隐含代表十进制 0
+      for (let i = 9; i >= 1; i--) {
+        if (st.I_bar[i] === 0) {
+          winner = i;
+          break;
+        }
+      }
+
+      // 输出为 winner 的 4位 BCD 反码
+      const Y3_bar = ((winner >> 3) & 1) ? 0 : 1;
+      const Y2_bar = ((winner >> 2) & 1) ? 0 : 1;
+      const Y1_bar = ((winner >> 1) & 1) ? 0 : 1;
+      const Y0_bar = (winner & 1) ? 0 : 1;
+
+      drawICBox(250, 35, 250, 385, '74HC147', '10线-4线 BCD 优先编码器 (无使能端)', true);
+
+      // 绘制 I9' ~ I1' 共 9 根输入线
+      for (let idx = 0; idx < 9; idx++) {
+        const i = 9 - idx;
+        const py = 100 + idx * 33;
+        const val = st.I_bar[i];
+        let mode = 'idle';
+        if (val === 0) mode = (winner === i) ? 'low-active' : 'masked';
+
+        drawSignalWire(95, py, 245, py, mode);
+        drawBubble(245, py, mode === 'low-active');
+
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = mode === 'low-active' ? '#38bdf8' : (mode === 'masked' ? '#fbbf24' : '#64748b');
+        ctx.fillText(`I${i}'=${val}`, 40, py + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`I${i}'`, 260, py + 4);
+
+        if (val === 0) {
+          if (winner === i) {
+            ctx.fillStyle = '#38bdf8';
+            ctx.font = 'bold 12px Inter';
+            ctx.fillText(`👑 选中十进制 ${i}`, 300, py + 4);
+          } else {
+            ctx.fillStyle = '#f59e0b';
+            ctx.font = '12px Inter';
+            ctx.fillText(`🔒 被 I${winner}′ 屏蔽`, 300, py + 4);
+          }
+        }
+      }
+
+      // 绘制右侧 Y3' ~ Y0'
+      const outs = [
+        { name: "Y3'", val: Y3_bar, weight: '8', y: 140 },
+        { name: "Y2'", val: Y2_bar, weight: '4', y: 195 },
+        { name: "Y1'", val: Y1_bar, weight: '2', y: 250 },
+        { name: "Y0'", val: Y0_bar, weight: '1', y: 305 }
+      ];
+      outs.forEach(o => {
+        const isLow = (o.val === 0);
+        drawBubble(505, o.y, isLow);
+        drawSignalWire(510, o.y, 645, o.y, isLow ? 'low-active' : 'idle');
+        ctx.fillStyle = '#cbd5e1';
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillText(o.name, 465, o.y + 4);
+        ctx.fillStyle = isLow ? '#38bdf8' : '#94a3b8';
+        ctx.font = 'bold 14px "JetBrains Mono"';
+        ctx.fillText(`${o.name} = ${o.val} (权${o.weight})`, 652, o.y + 4);
+      });
+
+      updateStatusCards([
+        {
+          label: '最高优先级有效按键',
+          value: winner === 0 ? '无按键按下 (隐含代表 I0 即数字 0)' : `I${winner}′ = 0 (十进制按键 ${winner})`,
+          color: winner === 0 ? 'text-amber-300' : 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '对应正逻辑 8421 BCD 码',
+          value: `${(winner>>3)&1} ${(winner>>2)&1} ${(winner>>1)&1} ${winner&1} (十进制 ${winner})`,
+          color: 'text-emerald-400',
+          border: 'border-emerald-500'
+        },
+        {
+          label: '74HC147 实际输出 (反码)',
+          value: `Y3′Y2′Y1′Y0′ = ${Y3_bar} ${Y2_bar} ${Y1_bar} ${Y0_bar}`,
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 3. 渲染 74HC138
+    function render74HC138() {
+      const st = chipStates['74HC138'];
+      const enabled = (st.S1 === 1 && st.S2_bar === 0 && st.S3_bar === 0);
+      const addr = (st.A2 << 2) | (st.A1 << 1) | st.A0;
+
+      drawICBox(245, 45, 250, 365, '74HC138', enabled ? '3线-8线译码器 (使能激活)' : '使能条件不满足 (输出全锁死为1)', enabled);
+
+      // 使能端绘制
+      const enPins = [
+        { name: 'S1', val: st.S1, ok: st.S1 === 1, low: false, y: 115 },
+        { name: "S2'", val: st.S2_bar, ok: st.S2_bar === 0, low: true, y: 150 },
+        { name: "S3'", val: st.S3_bar, ok: st.S3_bar === 0, low: true, y: 185 }
+      ];
+      enPins.forEach(p => {
+        drawSignalWire(95, p.y, 240, p.y, p.ok ? (p.low ? 'low-active' : 'high-active') : 'idle');
+        if (p.low) drawBubble(240, p.y, p.ok);
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = p.ok ? '#34d399' : '#fb7185';
+        ctx.fillText(`${p.name}=${p.val}`, 38, p.y + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(p.name, 258, p.y + 4);
+      });
+
+      // 地址端 A2, A1, A0
+      const addrPins = [
+        { name: 'A2(高位)', short: 'A2', val: st.A2, y: 265 },
+        { name: 'A1(中位)', short: 'A1', val: st.A1, y: 315 },
+        { name: 'A0(低位)', short: 'A0', val: st.A0, y: 365 }
+      ];
+      addrPins.forEach(p => {
+        drawSignalWire(95, p.y, 245, p.y, p.val === 1 ? 'high-active' : 'idle');
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = p.val === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`${p.name}=${p.val}`, 15, p.y + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(p.short, 258, p.y + 4);
+      });
+
+      // 右侧 8 个最小项反码输出 Y0' ~ Y7'
+      for (let i = 0; i < 8; i++) {
+        const py = 110 + i * 38;
+        const selected = enabled && (i === addr);
+        drawBubble(500, py, selected);
+        drawSignalWire(505, py, 645, py, selected ? 'low-active' : 'idle');
+
+        if (selected) {
+          // 芯片内部寻址激光连线
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(310, 315);
+          ctx.lineTo(455, py);
+          ctx.stroke();
+        }
+
+        ctx.font = selected ? 'bold 13px "JetBrains Mono"' : '13px "JetBrains Mono"';
+        ctx.fillStyle = selected ? '#38bdf8' : '#64748b';
+        ctx.fillText(`Y${i}'`, 462, py + 4);
+        ctx.fillText(`Y${i}' = ${selected ? '0 (选中 m' + i + '′)' : '1'}`, 652, py + 4);
+      }
+
+      updateStatusCards([
+        {
+          label: '使能控制端 (S1, S2′, S3′)',
+          value: enabled ? '1, 0, 0 (使能满足，正常点名)' : `${st.S1}, ${st.S2_bar}, ${st.S3_bar} (未满足 1,0,0 全输出1)`,
+          color: enabled ? 'text-emerald-400' : 'text-rose-400',
+          border: enabled ? 'border-emerald-500' : 'border-rose-500'
+        },
+        {
+          label: '输入二进制地址 A2 A1 A0',
+          value: `${st.A2}${st.A1}${st.A0} (对应十进制通道 ${addr})`,
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '译码低有效输出端',
+          value: enabled ? `仅 Y${addr}′ = 0 (即 m${addr}′)，其余全为 1` : 'Y0′ ~ Y7′ 全部锁死为 1',
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 4. 渲染 74HC42
+    function render74HC42() {
+      const st = chipStates['74HC42'];
+      const val = (st.A3 << 3) | (st.A2 << 2) | (st.A1 << 1) | st.A0;
+      const isValidBCD = (val <= 9);
+
+      drawICBox(245, 35, 250, 385, '74HC42', isValidBCD ? '4线-10线 BCD 译码器 (合法BCD码)' : `⚠️ 非法伪码 (${val}>9) 全部拒收！`, isValidBCD);
+
+      // 左侧 4 位 BCD 输入
+      const ins = [
+        { name: 'A3 (权8)', short: 'A3', v: st.A3, y: 150 },
+        { name: 'A2 (权4)', short: 'A2', v: st.A2, y: 210 },
+        { name: 'A1 (权2)', short: 'A1', v: st.A1, y: 270 },
+        { name: 'A0 (权1)', short: 'A0', v: st.A0, y: 330 }
+      ];
+      ins.forEach(p => {
+        drawSignalWire(95, p.y, 245, p.y, p.v === 1 ? 'high-active' : 'idle');
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = p.v === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`${p.name}=${p.v}`, 18, p.y + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(p.short, 258, p.y + 4);
+      });
+
+      // 右侧 Y0' ~ Y9' 10路输出
+      for (let i = 0; i < 10; i++) {
+        const py = 95 + i * 32;
+        const selected = (i === val);
+        drawBubble(500, py, selected);
+        drawSignalWire(505, py, 645, py, selected ? 'low-active' : 'idle');
+
+        if (selected) {
+          ctx.strokeStyle = '#38bdf8';
+          ctx.lineWidth = 2.5;
+          ctx.beginPath();
+          ctx.moveTo(310, 240);
+          ctx.lineTo(455, py);
+          ctx.stroke();
+        }
+
+        ctx.font = selected ? 'bold 13px "JetBrains Mono"' : '12px "JetBrains Mono"';
+        ctx.fillStyle = selected ? '#38bdf8' : '#64748b';
+        ctx.fillText(`Y${i}'`, 462, py + 4);
+        ctx.fillText(`Y${i}' = ${selected ? '0 (点中!)' : '1'}`, 652, py + 4);
+      }
+
+      updateStatusCards([
+        {
+          label: '输入代码 A3 A2 A1 A0',
+          value: `${st.A3}${st.A2}${st.A1}${st.A0} (十进制 ${val})`,
+          color: isValidBCD ? 'text-sky-400' : 'text-rose-400',
+          border: isValidBCD ? 'border-sky-500' : 'border-rose-500'
+        },
+        {
+          label: 'BCD 合法性安检',
+          value: isValidBCD ? '✅ 合法 8421 BCD 码 (0~9)' : '❌ 伪码越界 (10~15 非法状态)',
+          color: isValidBCD ? 'text-emerald-400' : 'text-rose-400',
+          border: isValidBCD ? 'border-emerald-500' : 'border-rose-500'
+        },
+        {
+          label: '10 路输出响应 (Y0′~Y9′)',
+          value: isValidBCD ? `Y${val}′ = 0 有效，其余 9 路为 1` : '全部输出高电平 1 (无任何引脚选中)',
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 七段数码管标准字形表 (a,b,c,d,e,f,g)
+    const SEG_TABLE = {
+      0: [1, 1, 1, 1, 1, 1, 0],
+      1: [0, 1, 1, 0, 0, 0, 0],
+      2: [1, 1, 0, 1, 1, 0, 1],
+      3: [1, 1, 1, 1, 0, 0, 1],
+      4: [0, 1, 1, 0, 0, 1, 1],
+      5: [1, 0, 1, 1, 0, 1, 1],
+      6: [1, 0, 1, 1, 1, 1, 1],
+      7: [1, 1, 1, 0, 0, 0, 0],
+      8: [1, 1, 1, 1, 1, 1, 1],
+      9: [1, 1, 1, 1, 0, 1, 1],
+      10: [0, 0, 0, 1, 1, 0, 1], // 7448 10~15 特殊字符
+      11: [0, 0, 1, 1, 0, 0, 1],
+      12: [0, 1, 0, 0, 0, 1, 1],
+      13: [1, 0, 0, 1, 0, 1, 1],
+      14: [0, 0, 0, 1, 1, 1, 1],
+      15: [0, 0, 0, 0, 0, 0, 0]
+    };
+
+    function render7448() {
+      const st = chipStates['7448'];
+      const num = (st.A3 << 3) | (st.A2 << 2) | (st.A1 << 1) | st.A0;
+
+      // 判定 7448 优先级逻辑：BI' > LT' > RBI'(当num==0) > 正常译码
+      let segs = [0, 0, 0, 0, 0, 0, 0];
+      let modeText = '';
+      let rboOut = 1;
+
+      if (st.BI_RBO_bar === 0) {
+        segs = [0, 0, 0, 0, 0, 0, 0];
+        modeText = '🛑 BI′=0 强制灭灯激活（优先级最高，全灭）';
+        rboOut = 0;
+      } else if (st.LT_bar === 0) {
+        segs = [1, 1, 1, 1, 1, 1, 1];
+        modeText = '💡 LT′=0 灯测试激活（全亮检测数字 8）';
+      } else if (st.RBI_bar === 0 && num === 0) {
+        segs = [0, 0, 0, 0, 0, 0, 0];
+        modeText = '🔇 RBI′=0 且输入 0000（动态消隐无效零，全灭且 RBO′=0）';
+        rboOut = 0;
+      } else {
+        segs = SEG_TABLE[num];
+        modeText = `✅ 正常译码显示 (输入 BCD=${num})`;
+      }
+
+      drawICBox(215, 45, 220, 365, '7448', '七段显示译码器 (高电平驱动共阴极)', st.BI_RBO_bar !== 0);
+
+      // 左侧三大控制端 + 4位输入
+      const leftPins = [
+        { name: "BI'/RBO'", v: st.BI_RBO_bar, low: true, y: 105 },
+        { name: "LT'(试灯)", v: st.LT_bar, low: true, y: 145 },
+        { name: "RBI'(灭零)", v: st.RBI_bar, low: true, y: 185 },
+        { name: "A3 (权8)", v: st.A3, low: false, y: 245 },
+        { name: "A2 (权4)", v: st.A2, low: false, y: 285 },
+        { name: "A1 (权2)", v: st.A1, low: false, y: 325 },
+        { name: "A0 (权1)", v: st.A0, low: false, y: 365 }
+      ];
+      leftPins.forEach(p => {
+        const active = p.low ? (p.v === 0) : (p.v === 1);
+        drawSignalWire(85, p.y, 210, p.y, active ? (p.low ? 'low-active' : 'high-active') : 'idle');
+        if (p.low) drawBubble(210, p.y, active);
+        ctx.font = '12px "JetBrains Mono"';
+        ctx.fillStyle = active ? (p.low ? '#38bdf8' : '#34d399') : '#94a3b8';
+        ctx.fillText(`${p.name}=${p.v}`, 12, p.y + 4);
+      });
+
+      // 右侧 Ya ~ Yg 7根高有效驱动线连向七段数码管
+      const segNames = ['Ya', 'Yb', 'Yc', 'Yd', 'Ye', 'Yf', 'Yg'];
+      for (let i = 0; i < 7; i++) {
+        const py = 115 + i * 40;
+        const isHigh = segs[i] === 1;
+        drawSignalWire(435, py, 545, py, isHigh ? 'high-active' : 'idle');
+        ctx.font = 'bold 12px "JetBrains Mono"';
+        ctx.fillStyle = isHigh ? '#34d399' : '#64748b';
+        ctx.fillText(`${segNames[i]}=${segs[i]}`, 385, py + 4);
+      }
+
+      // 绘制右侧真实的共阴极七段数码管面板
+      drawSevenSegmentDisplay(545, 85, 175, 290, segs);
+
+      updateStatusCards([
+        {
+          label: '当前控制模式优先级判定',
+          value: modeText,
+          color: st.BI_RBO_bar === 0 ? 'text-rose-400' : (st.LT_bar === 0 ? 'text-amber-300' : 'text-emerald-400'),
+          border: st.BI_RBO_bar === 0 ? 'border-rose-500' : 'border-emerald-500'
+        },
+        {
+          label: '笔段输出 Ya ~ Yg (高有效)',
+          value: segs.join(' '),
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '灭零级联输出 RBO′',
+          value: `RBO′ = ${rboOut} ${rboOut === 0 ? '(当前处于消隐灭灯态)' : '(正常点亮态)'}`,
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    function drawSevenSegmentDisplay(x, y, w, h, segs) {
+      ctx.save();
+      ctx.fillStyle = '#090d16';
+      ctx.strokeStyle = '#334155';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 14);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#94a3b8';
+      ctx.font = '12px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText('共阴极七段数码管 (BS201)', x + w / 2, y + 24);
+      ctx.fillText('公共阴极 COM 接地 GND', x + w / 2, y + h - 12);
+
+      const cx = x + w / 2;
+      const cy = y + h / 2 + 4;
+      const sw = 58; // 水平段长度
+      const sh = 58; // 垂直段长度
+      const t = 11;  // 段粗细
+
+      // a, b, c, d, e, f, g 坐标定义
+      const coords = [
+        { x: cx - sw / 2, y: cy - sh - t, w: sw, h: t, label: 'a' },         // a (上)
+        { x: cx + sw / 2, y: cy - sh, w: t, h: sh, label: 'b' },             // b (右上)
+        { x: cx + sw / 2, y: cy + t, w: t, h: sh, label: 'c' },              // c (右下)
+        { x: cx - sw / 2, y: cy + sh + t, w: sw, h: t, label: 'd' },         // d (下)
+        { x: cx - sw / 2 - t, y: cy + t, w: t, h: sh, label: 'e' },          // e (左下)
+        { x: cx - sw / 2 - t, y: cy - sh, w: t, h: sh, label: 'f' },         // f (左上)
+        { x: cx - sw / 2, y: cy, w: sw, h: t, label: 'g' }                   // g (中)
+      ];
+
+      coords.forEach((s, idx) => {
+        const on = segs[idx] === 1;
+        ctx.save();
+        ctx.beginPath();
+        ctx.roundRect(s.x, s.y, s.w, s.h, 5);
+        if (on) {
+          ctx.fillStyle = '#22c55e';
+          ctx.shadowColor = '#4ade80';
+          ctx.shadowBlur = 16;
+        } else {
+          ctx.fillStyle = '#1e293b';
+          ctx.shadowBlur = 0;
+        }
+        ctx.fill();
+        ctx.restore();
+      });
+      ctx.restore();
+    }
+
+    // ============ 新增 7 款芯片的 Canvas 渲染 ============
+
+    // 6. 渲染 74HC139（双2线-4线译码器）
+    function render74HC139() {
+      const st = chipStates['74HC139'];
+      st.halves.forEach((h, hn) => {
+        const tag = hn + 1;
+        const enabled = h.G_bar === 0;
+        const addr = (h.A1 << 1) | h.A0;
+        const bx = 250, bw = 230;
+        const by = hn === 0 ? 22 : 236;
+        const bh = 192;
+        drawICBox(bx, by, bw, bh, '74HC139 · 半片' + tag, enabled ? `2线-4线译码 (${tag}G′=0 工作中)` : `${tag}G′=1 本半片锁死`, enabled);
+
+        // 使能引脚（低有效）
+        const ey = by + 34;
+        drawSignalWire(115, ey, bx - 5, ey, h.G_bar === 0 ? 'low-active' : 'idle');
+        drawBubble(bx - 5, ey, h.G_bar === 0);
+        ctx.font = 'bold 12px "JetBrains Mono"';
+        ctx.fillStyle = h.G_bar === 0 ? '#38bdf8' : '#fb7185';
+        ctx.fillText(`${tag}G'=${h.G_bar}`, 42, ey + 4);
+
+        // 地址输入
+        ['A1', 'A0'].forEach((nm, k) => {
+          const py = by + 82 + k * 42;
+          const v = k === 0 ? h.A1 : h.A0;
+          drawSignalWire(115, py, bx - 5, py, v === 1 ? 'high-active' : 'idle');
+          ctx.font = '13px "JetBrains Mono"';
+          ctx.fillStyle = v === 1 ? '#34d399' : '#94a3b8';
+          ctx.fillText(`${tag}${nm}=${v}`, 28, py + 4);
+          ctx.fillStyle = '#cbd5e1';
+          ctx.fillText(nm, bx + 8, py + 4);
+        });
+
+        // 内部译码路径 + 4 路低有效输出
+        for (let i = 0; i < 4; i++) {
+          const py = by + 42 + i * 38;
+          const sel = enabled && i === addr;
+          if (sel) {
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(bx + 92, by + bh - 26);
+            ctx.lineTo(bx + bw - 16, py);
+            ctx.stroke();
+          }
+          drawBubble(bx + bw + 5, py, sel);
+          drawSignalWire(bx + bw + 10, py, 640, py, sel ? 'low-active' : 'idle');
+          ctx.font = '13px "JetBrains Mono"';
+          ctx.fillStyle = sel ? '#38bdf8' : '#64748b';
+          ctx.fillText(`${tag}Y${i}'`, 490, py - 7);
+          ctx.font = sel ? 'bold 13px "JetBrains Mono"' : '12px "JetBrains Mono"';
+          ctx.fillText(`${tag}Y${i}' = ${sel ? 0 : 1}${sel ? ' (选中)' : ''}`, 648, py + 4);
+        }
+
+        ctx.font = 'bold 12px Inter';
+        ctx.fillStyle = enabled ? '#7dd3fc' : '#64748b';
+        ctx.fillText(enabled ? `地址 ${h.A1}${h.A0} → 点名 ${tag}Y${addr}'` : '输出全为 1', bx + 92, by + bh - 8);
+      });
+
+      updateStatusCards([
+        {
+          label: '半片1 (1G′ · 1A1 1A0)',
+          value: st.halves[0].G_bar === 1
+            ? '1G′=1 锁死：1Y0′~1Y3′ 全为 1'
+            : `地址 ${st.halves[0].A1}${st.halves[0].A0} → 1Y${(st.halves[0].A1 << 1) | st.halves[0].A0}′ = 0`,
+          color: st.halves[0].G_bar === 1 ? 'text-rose-400' : 'text-sky-400',
+          border: st.halves[0].G_bar === 1 ? 'border-rose-500' : 'border-sky-500'
+        },
+        {
+          label: '半片2 (2G′ · 2A1 2A0)',
+          value: st.halves[1].G_bar === 1
+            ? '2G′=1 锁死：2Y0′~2Y3′ 全为 1'
+            : `地址 ${st.halves[1].A1}${st.halves[1].A0} → 2Y${(st.halves[1].A1 << 1) | st.halves[1].A0}′ = 0`,
+          color: st.halves[1].G_bar === 1 ? 'text-rose-400' : 'text-sky-400',
+          border: st.halves[1].G_bar === 1 ? 'border-rose-500' : 'border-sky-500'
+        },
+        {
+          label: '级联扩展提示',
+          value: '两半片输出线与并联 + 高位地址控制 1G′/2G′ → 扩展为 3线-8线译码器',
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 7. 渲染 74HC4511（BCD-七段锁存/译码/驱动器）
+    function render74HC4511() {
+      const st = chipStates['74HC4511'];
+      const inputNum = (st.A3 << 3) | (st.A2 << 2) | (st.A1 << 1) | st.A0;
+      let segs, modeText, displayNum;
+
+      if (st.LT_bar === 0) {
+        segs = [1, 1, 1, 1, 1, 1, 1];
+        displayNum = 8;
+        modeText = '💡 LT′=0 试灯激活（7 段全亮显示 8，优先级最高）';
+      } else if (st.BL_bar === 0) {
+        segs = [0, 0, 0, 0, 0, 0, 0];
+        displayNum = null;
+        modeText = '🛑 BL′=0 强制灭灯（数码管全黑）';
+      } else if (st.LE === 1) {
+        displayNum = st.latchedNum;
+        segs = displayNum <= 9 ? SEG_TABLE[displayNum] : [0, 0, 0, 0, 0, 0, 0];
+        modeText = `🔒 LE=1 锁存保持：数码管冻结在锁存值 ${displayNum}，当前输入 ${inputNum} 已被无视`;
+      } else {
+        displayNum = inputNum;
+        segs = inputNum <= 9 ? SEG_TABLE[inputNum] : [0, 0, 0, 0, 0, 0, 0];
+        modeText = inputNum <= 9
+          ? `✅ LE=0 透明传输，正常译码显示 (BCD=${inputNum})`
+          : `⚠️ 输入 ${inputNum} 是伪码（10~15），4511 伪码消隐全灭`;
+      }
+
+      drawICBox(205, 45, 225, 365, '74HC4511', '锁存·译码·驱动 (高有效·共阴)', st.BL_bar !== 0 && st.LT_bar !== 0);
+
+      const leftPins = [
+        { name: "LT'(试灯)", v: st.LT_bar, low: true, y: 105 },
+        { name: "BL'(灭灯)", v: st.BL_bar, low: true, y: 145 },
+        { name: "LE (锁存)", v: st.LE, low: false, y: 185 },
+        { name: "A3 (权8)", v: st.A3, low: false, y: 245 },
+        { name: "A2 (权4)", v: st.A2, low: false, y: 285 },
+        { name: "A1 (权2)", v: st.A1, low: false, y: 325 },
+        { name: "A0 (权1)", v: st.A0, low: false, y: 365 }
+      ];
+      leftPins.forEach(p => {
+        const active = p.low ? (p.v === 0) : (p.v === 1);
+        drawSignalWire(90, p.y, 200, p.y, active ? (p.low ? 'low-active' : 'high-active') : 'idle');
+        if (p.low) drawBubble(200, p.y, active);
+        ctx.font = '12px "JetBrains Mono"';
+        ctx.fillStyle = active ? (p.low ? '#38bdf8' : '#34d399') : '#94a3b8';
+        ctx.fillText(`${p.name}=${p.v}`, 10, p.y + 4);
+      });
+
+      const segNames = ['Ya', 'Yb', 'Yc', 'Yd', 'Ye', 'Yf', 'Yg'];
+      for (let i = 0; i < 7; i++) {
+        const py = 115 + i * 40;
+        const isHigh = segs[i] === 1;
+        drawSignalWire(430, py, 545, py, isHigh ? 'high-active' : 'idle');
+        ctx.font = 'bold 12px "JetBrains Mono"';
+        ctx.fillStyle = isHigh ? '#34d399' : '#64748b';
+        ctx.fillText(`${segNames[i]}=${segs[i]}`, 372, py + 4);
+      }
+
+      drawSevenSegmentDisplay(545, 85, 175, 290, segs);
+
+      updateStatusCards([
+        {
+          label: '控制端优先级判定',
+          value: modeText,
+          color: st.BL_bar === 0 ? 'text-rose-400' : (st.LT_bar === 0 ? 'text-amber-300' : 'text-emerald-400'),
+          border: st.BL_bar === 0 ? 'border-rose-500' : 'border-emerald-500'
+        },
+        {
+          label: '锁存寄存器 (LE 置 1 时刻存档)',
+          value: `latched = ${st.latchedNum} ${st.LE === 1 ? '(正在锁存保持)' : '(待命，LE=0 实时跟随输入)'}`,
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '笔段输出 Ya ~ Yg (高有效)',
+          value: `${segs.join(' ')} ${displayNum !== null && displayNum <= 9 ? `→ 显示 ${displayNum}` : '→ 全灭'}`,
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 8. 渲染 74HC151（8选1数据选择器）
+    function render74HC151() {
+      const st = chipStates['74HC151'];
+      const enabled = st.E_bar === 0;
+      const addr = (st.C << 2) | (st.B << 1) | st.A;
+      const Y = enabled ? st.D[addr] : 0;
+      const W = 1 - Y;
+      const selPy = 100 + (7 - addr) * 30;
+
+      drawICBox(265, 25, 235, 400, '74HC151', enabled ? `8选1数据选择器 (点播通道 D${addr})` : "E′=1 芯片禁止 (Y=0, W=1)", enabled);
+
+      // 使能端 E'
+      const ey = 60;
+      drawSignalWire(115, ey, 260, ey, st.E_bar === 0 ? 'low-active' : 'idle');
+      drawBubble(260, ey, st.E_bar === 0);
+      ctx.font = 'bold 13px "JetBrains Mono"';
+      ctx.fillStyle = st.E_bar === 0 ? '#38bdf8' : '#fb7185';
+      ctx.fillText(`E'=${st.E_bar}`, 58, ey + 4);
+
+      // 数据输入 D7 ~ D0（上高下低）
+      for (let idx = 0; idx < 8; idx++) {
+        const i = 7 - idx;
+        const py = 100 + idx * 30;
+        const v = st.D[i];
+        const sel = enabled && i === addr;
+        drawSignalWire(115, py, 260, py, sel ? 'selected' : (v === 1 ? 'high-active' : 'idle'));
+        ctx.font = sel ? 'bold 13px "JetBrains Mono"' : '13px "JetBrains Mono"';
+        ctx.fillStyle = sel ? '#22d3ee' : (v === 1 ? '#34d399' : '#64748b');
+        ctx.fillText(`D${i}=${v}`, 52, py + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`D${i}`, 268, py + 4);
+      }
+
+      // 地址选择端 C B A
+      const selPins = [
+        { name: 'C', v: st.C, y: 345 },
+        { name: 'B', v: st.B, y: 382 },
+        { name: 'A', v: st.A, y: 419 }
+      ];
+      selPins.forEach(p => {
+        drawSignalWire(115, p.y, 260, p.y, p.v === 1 ? 'high-active' : 'idle');
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = p.v === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`${p.name}=${p.v}`, 40, p.y + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(p.name, 268, p.y + 4);
+      });
+
+      // 内部旋转开关臂
+      if (enabled) {
+        ctx.strokeStyle = '#22d3ee';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(335, 205);
+        ctx.lineTo(300, selPy);
+        ctx.stroke();
+        ctx.fillStyle = '#0f172a';
+        ctx.beginPath(); ctx.arc(335, 205, 8, 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = '#94a3b8'; ctx.lineWidth = 1.5; ctx.stroke();
+        ctx.fillStyle = '#a5f3fc';
+        ctx.font = 'bold 12px Inter';
+        ctx.fillText(`拨到 D${addr} → Y`, 352, 209);
+      } else {
+        ctx.fillStyle = '#fb7185';
+        ctx.font = 'bold 12px Inter';
+        ctx.fillText('禁止态：开关悬空', 320, 209);
+      }
+
+      // 互补输出 Y 与 W
+      drawSignalWire(505, 140, 605, 140, enabled && Y === 1 ? 'high-active' : 'idle');
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '13px "JetBrains Mono"';
+      ctx.fillText('Y', 508, 130);
+      ctx.font = 'bold 15px "JetBrains Mono"';
+      ctx.fillStyle = enabled && Y === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`Y = ${Y}${enabled ? ` (=D${addr})` : '(禁)'}`, 612, 145);
+
+      drawBubble(505, 280, enabled && W === 1);
+      drawSignalWire(510, 280, 605, 280, enabled && W === 1 ? 'high-active' : 'idle');
+      ctx.fillStyle = '#cbd5e1';
+      ctx.font = '13px "JetBrains Mono"';
+      ctx.fillText('W', 512, 270);
+      ctx.font = 'bold 15px "JetBrains Mono"';
+      ctx.fillStyle = enabled && W === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`W = ${W} (Y反)`, 612, 285);
+
+      updateStatusCards([
+        {
+          label: '通道地址 C B A',
+          value: `${st.C} ${st.B} ${st.A} → 选中 D${addr} (数据 = ${st.D[addr]})`,
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: "使能端 E′",
+          value: st.E_bar === 0 ? "E′=0 正常选通" : "E′=1 禁止 (Y 恒 0, W 恒 1)",
+          color: st.E_bar === 0 ? 'text-emerald-400' : 'text-rose-400',
+          border: st.E_bar === 0 ? 'border-emerald-500' : 'border-rose-500'
+        },
+        {
+          label: '互补输出 Y / W',
+          value: enabled ? `Y = ${Y}，W = ${W} (永远互为反码)` : 'Y = 0，W = 1',
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 9. 渲染 74HC153（双4选1数据选择器）
+    function render74HC153() {
+      const st = chipStates['74HC153'];
+      const sel = (st.B << 1) | st.A;
+      const Y1 = st.G1_bar === 0 ? st.D1[sel] : 0;
+      const Y2 = st.G2_bar === 0 ? st.D2[sel] : 0;
+
+      drawICBox(250, 18, 235, 414, '74HC153', '双4选1选择器 (地址BA两路共享)', true);
+
+      // 上半片使能 1G'
+      drawSignalWire(115, 52, 245, 52, st.G1_bar === 0 ? 'low-active' : 'idle');
+      drawBubble(245, 52, st.G1_bar === 0);
+      ctx.font = 'bold 12px "JetBrains Mono"';
+      ctx.fillStyle = st.G1_bar === 0 ? '#38bdf8' : '#fb7185';
+      ctx.fillText(`1G'=${st.G1_bar}`, 48, 42);
+
+      // 上半片数据 1C3~1C0
+      for (let k = 0; k < 4; k++) {
+        const i = 3 - k;
+        const py = 88 + k * 30;
+        const v = st.D1[i];
+        const on = st.G1_bar === 0 && i === sel;
+        drawSignalWire(115, py, 245, py, on ? 'selected' : (v === 1 ? 'high-active' : 'idle'));
+        ctx.font = on ? 'bold 13px "JetBrains Mono"' : '13px "JetBrains Mono"';
+        ctx.fillStyle = on ? '#22d3ee' : (v === 1 ? '#34d399' : '#64748b');
+        ctx.fillText(`1C${i}=${v}`, 52, py + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`1C${i}`, 252, py + 4);
+      }
+      if (st.G1_bar === 0) {
+        const py1 = 88 + (3 - sel) * 30;
+        ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(322, 130); ctx.lineTo(300, py1); ctx.stroke();
+        ctx.fillStyle = '#a5f3fc'; ctx.font = 'bold 11px Inter';
+        ctx.fillText(`1C${sel} → 1Y`, 330, 134);
+      } else {
+        ctx.fillStyle = '#fb7185'; ctx.font = 'bold 11px Inter';
+        ctx.fillText('1G′=1 禁止 → 1Y=0', 300, 134);
+      }
+      drawSignalWire(488, 130, 598, 130, Y1 === 1 ? 'high-active' : 'idle');
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '13px "JetBrains Mono"';
+      ctx.fillText('1Y', 490, 120);
+      ctx.font = 'bold 14px "JetBrains Mono"';
+      ctx.fillStyle = Y1 === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`1Y = ${Y1}`, 606, 135);
+
+      // 共享地址端 B A
+      const sharedPins = [
+        { name: 'B(共享高位)', short: 'B', v: st.B, y: 228 },
+        { name: 'A(共享低位)', short: 'A', v: st.A, y: 262 }
+      ];
+      sharedPins.forEach(p => {
+        drawSignalWire(115, p.y, 245, p.y, p.v === 1 ? 'high-active' : 'idle');
+        ctx.font = '13px "JetBrains Mono"';
+        ctx.fillStyle = p.v === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`${p.name}=${p.v}`, 10, p.y + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(p.short, 252, p.y + 4);
+      });
+
+      // 下半片使能 2G'
+      drawSignalWire(115, 300, 245, 300, st.G2_bar === 0 ? 'low-active' : 'idle');
+      drawBubble(245, 300, st.G2_bar === 0);
+      ctx.font = 'bold 12px "JetBrains Mono"';
+      ctx.fillStyle = st.G2_bar === 0 ? '#38bdf8' : '#fb7185';
+      ctx.fillText(`2G'=${st.G2_bar}`, 48, 290);
+
+      // 下半片数据 2C3~2C0
+      for (let k = 0; k < 4; k++) {
+        const i = 3 - k;
+        const py = 330 + k * 28;
+        const v = st.D2[i];
+        const on = st.G2_bar === 0 && i === sel;
+        drawSignalWire(115, py, 245, py, on ? 'selected' : (v === 1 ? 'high-active' : 'idle'));
+        ctx.font = on ? 'bold 13px "JetBrains Mono"' : '13px "JetBrains Mono"';
+        ctx.fillStyle = on ? '#22d3ee' : (v === 1 ? '#34d399' : '#64748b');
+        ctx.fillText(`2C${i}=${v}`, 52, py + 4);
+        ctx.fillStyle = '#cbd5e1';
+        ctx.fillText(`2C${i}`, 252, py + 4);
+      }
+      if (st.G2_bar === 0) {
+        const py2 = 330 + (3 - sel) * 28;
+        ctx.strokeStyle = '#22d3ee'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(322, 372); ctx.lineTo(300, py2); ctx.stroke();
+        ctx.fillStyle = '#a5f3fc'; ctx.font = 'bold 11px Inter';
+        ctx.fillText(`2C${sel} → 2Y`, 330, 376);
+      } else {
+        ctx.fillStyle = '#fb7185'; ctx.font = 'bold 11px Inter';
+        ctx.fillText('2G′=1 禁止 → 2Y=0', 300, 376);
+      }
+      drawSignalWire(488, 372, 598, 372, Y2 === 1 ? 'high-active' : 'idle');
+      ctx.fillStyle = '#cbd5e1'; ctx.font = '13px "JetBrains Mono"';
+      ctx.fillText('2Y', 490, 362);
+      ctx.font = 'bold 14px "JetBrains Mono"';
+      ctx.fillStyle = Y2 === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`2Y = ${Y2}`, 606, 377);
+
+      updateStatusCards([
+        {
+          label: '共享地址 B A',
+          value: `${st.B} ${st.A} → 两路同时选中第 ${sel} 号通道 (地址共享、数据独立)`,
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '上半片输出 1Y',
+          value: st.G1_bar === 0 ? `1Y = 1C${sel} = ${Y1}` : '1G′=1 → 1Y = 0 (禁止)',
+          color: st.G1_bar === 0 ? 'text-emerald-400' : 'text-rose-400',
+          border: st.G1_bar === 0 ? 'border-emerald-500' : 'border-rose-500'
+        },
+        {
+          label: '下半片输出 2Y',
+          value: st.G2_bar === 0 ? `2Y = 2C${sel} = ${Y2}` : '2G′=1 → 2Y = 0 (禁止)',
+          color: st.G2_bar === 0 ? 'text-emerald-400' : 'text-rose-400',
+          border: st.G2_bar === 0 ? 'border-emerald-500' : 'border-rose-500'
+        }
+      ]);
+    }
+
+    // 10. 渲染 74HC157（四2选1数据选择器）
+    function render74HC157() {
+      const st = chipStates['74HC157'];
+      const enabled = st.G_bar === 0;
+      drawICBox(295, 28, 175, 400, '74HC157', enabled ? (st.S === 0 ? '四2选1 · S=0 全选A组' : '四2选1 · S=1 全选B组') : "G′=1 四路全禁止", enabled);
+
+      // 顶部使能与选择端
+      drawSignalWire(115, 58, 290, 58, st.G_bar === 0 ? 'low-active' : 'idle');
+      drawBubble(290, 58, st.G_bar === 0);
+      ctx.font = 'bold 12px "JetBrains Mono"';
+      ctx.fillStyle = st.G_bar === 0 ? '#38bdf8' : '#fb7185';
+      ctx.fillText(`G'=${st.G_bar}`, 50, 48);
+      drawSignalWire(115, 84, 290, 84, st.S === 1 ? 'high-active' : 'idle');
+      ctx.font = 'bold 12px "JetBrains Mono"';
+      ctx.fillStyle = st.S === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`S=${st.S}`, 62, 74);
+
+      for (let i = 0; i < 4; i++) {
+        const rowY = 128 + i * 78;
+        const a = st.A[i], b = st.B[i];
+        const yv = enabled ? (st.S === 0 ? a : b) : 0;
+        const pickA = enabled && st.S === 0;
+        const pickB = enabled && st.S === 1;
+        drawSignalWire(115, rowY - 13, 305, rowY - 13, pickA ? 'selected' : (a === 1 ? 'high-active' : 'idle'));
+        drawSignalWire(115, rowY + 13, 305, rowY + 13, pickB ? 'selected' : (b === 1 ? 'high-active' : 'idle'));
+        ctx.font = '12px "JetBrains Mono"';
+        ctx.fillStyle = pickA ? '#22d3ee' : (a === 1 ? '#34d399' : '#64748b');
+        ctx.fillText(`${i + 1}A=${a}`, 52, rowY - 9);
+        ctx.fillStyle = pickB ? '#22d3ee' : (b === 1 ? '#34d399' : '#64748b');
+        ctx.fillText(`${i + 1}B=${b}`, 52, rowY + 17);
+
+        // 2选1 单元
+        ctx.save();
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = enabled ? '#22d3ee' : '#334155';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.roundRect(305, rowY - 26, 155, 52, 8);
+        ctx.fill(); ctx.stroke();
+        ctx.restore();
+        ctx.font = 'bold 11px Inter';
+        ctx.fillStyle = enabled ? '#a5f3fc' : '#64748b';
+        ctx.fillText(enabled ? (pickA ? `${i + 1}A → ${i + 1}Y` : `${i + 1}B → ${i + 1}Y`) : '禁止', 352, rowY + 4);
+
+        drawSignalWire(470, rowY, 610, rowY, enabled && yv === 1 ? 'high-active' : 'idle');
+        ctx.font = 'bold 13px "JetBrains Mono"';
+        ctx.fillStyle = enabled && yv === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`${i + 1}Y=${yv}`, 618, rowY + 5);
+      }
+
+      updateStatusCards([
+        {
+          label: '选择端 S / 使能 G′',
+          value: enabled ? (st.S === 0 ? 'S=0：四路整体选 A 组 (1A~4A)' : 'S=1：四路整体切到 B 组 (1B~4B)') : "G′=1：四路 Y 全部强制为 0",
+          color: enabled ? 'text-emerald-400' : 'text-rose-400',
+          border: enabled ? 'border-emerald-500' : 'border-rose-500'
+        },
+        {
+          label: '4 位输出总线 Y4Y3Y2Y1',
+          value: [3, 2, 1, 0].map(i => enabled ? (st.S === 0 ? st.A[i] : st.B[i]) : 0).join(' ') + (enabled ? ` (来自${st.S === 0 ? 'A' : 'B'}组)` : ' (禁止)'),
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        },
+        {
+          label: '典型应用',
+          value: '两组 4 位总线一键切换 / 寄存器数据通路选择 (S 共享，整体同步切换)',
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        }
+      ]);
+    }
+
+    // 11. 渲染 74HC283（4位全加器）
+    function render74HC283() {
+      const st = chipStates['74HC283'];
+      const c = [st.Cin];
+      const s = [0, 0, 0, 0];
+      for (let i = 0; i < 4; i++) {
+        s[i] = st.A[i] ^ st.B[i] ^ c[i];
+        c[i + 1] = (st.A[i] & st.B[i]) | (c[i] & (st.A[i] ^ st.B[i]));
+      }
+      const aVal = st.A[0] + 2 * st.A[1] + 4 * st.A[2] + 8 * st.A[3];
+      const bVal = st.B[0] + 2 * st.B[1] + 4 * st.B[2] + 8 * st.B[3];
+      const sumVal = aVal + bVal + st.Cin;
+
+      drawICBox(250, 35, 230, 390, '74HC283', '4位全加器 (进位自低位向高位传递)', true);
+
+      // 逐位全加单元：上 MSB 下 LSB，进位自下而上
+      for (let k = 0; k < 4; k++) {
+        const i = 3 - k;
+        const rowY = 100 + k * 72;
+        const a = st.A[i], b = st.B[i];
+        drawSignalWire(95, rowY - 13, 280, rowY - 13, a === 1 ? 'high-active' : 'idle');
+        drawSignalWire(95, rowY + 13, 280, rowY + 13, b === 1 ? 'high-active' : 'idle');
+        ctx.font = '12px "JetBrains Mono"';
+        ctx.fillStyle = a === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`A${i}=${a}${i === 3 ? '(8)' : i === 2 ? '(4)' : i === 1 ? '(2)' : '(1)'}`, 22, rowY - 9);
+        ctx.fillStyle = b === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`B${i}=${b}${i === 3 ? '(8)' : i === 2 ? '(4)' : i === 1 ? '(2)' : '(1)'}`, 22, rowY + 17);
+
+        ctx.save();
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1.8;
+        ctx.beginPath();
+        ctx.roundRect(280, rowY - 25, 100, 50, 8);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = '#7dd3fc';
+        ctx.font = 'bold 12px "JetBrains Mono"';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Σ${i} 全加`, 330, rowY + 4);
+        ctx.restore();
+
+        drawSignalWire(380, rowY, 620, rowY, s[i] === 1 ? 'high-active' : 'idle');
+        ctx.font = 'bold 13px "JetBrains Mono"';
+        ctx.fillStyle = s[i] === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`S${i}=${s[i]}`, 628, rowY + 5);
+      }
+
+      // 低位进位输入 Cin → 最底部的 Σ0 单元
+      drawSignalWire(95, 388, 262, 388, st.Cin === 1 ? 'high-active' : 'idle');
+      drawSignalWire(262, 388, 262, 316, st.Cin === 1 ? 'high-active' : 'idle');
+      drawSignalWire(262, 316, 280, 316, st.Cin === 1 ? 'high-active' : 'idle');
+      ctx.font = 'bold 12px "JetBrains Mono"';
+      ctx.fillStyle = st.Cin === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`Cin=${st.Cin}`, 40, 378);
+
+      // 进位链（自下而上逐级传递）C1~C3
+      for (let k = 1; k < 4; k++) {
+        const rowY = 100 + k * 72;
+        const carryVal = c[4 - k];
+        drawSignalWire(316, rowY - 25, 316, rowY - 47, carryVal === 1 ? 'high-active' : 'idle');
+        ctx.font = 'bold 11px "JetBrains Mono"';
+        ctx.fillStyle = carryVal === 1 ? '#34d399' : '#64748b';
+        ctx.fillText(`C${4 - k}=${carryVal}`, 324, rowY - 32);
+      }
+      // 进位输出 Cout（自最高位 Σ3 顶部引出）
+      drawSignalWire(316, 75, 316, 52, c[4] === 1 ? 'high-active' : 'idle');
+      drawSignalWire(316, 52, 620, 52, c[4] === 1 ? 'high-active' : 'idle');
+      ctx.font = 'bold 13px "JetBrains Mono"';
+      ctx.fillStyle = c[4] === 1 ? '#34d399' : '#94a3b8';
+      ctx.fillText(`Cout=${c[4]}`, 560, 44);
+
+      updateStatusCards([
+        {
+          label: '竖式加法验证',
+          value: `${aVal} + ${bVal} + ${st.Cin}(Cin) = ${sumVal}`,
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '和输出 S3 S2 S1 S0',
+          value: `${s[3]} ${s[2]} ${s[1]} ${s[0]} (即十进制 ${(s[3] << 3) | (s[2] << 2) | (s[1] << 1) | s[0]})`,
+          color: 'text-emerald-400',
+          border: 'border-emerald-500'
+        },
+        {
+          label: '进位输出 Cout',
+          value: `Cout = ${c[4]} ${c[4] === 1 ? '→ 无符号和 > 15 溢出，接高位片级联' : '→ 无溢出'}`,
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    // 12. 渲染 74HC85（4位数值比较器）
+    function render74HC85() {
+      const st = chipStates['74HC85'];
+      let judgeBit = -1, result = null;
+      for (let i = 3; i >= 0; i--) {
+        if (st.A[i] !== st.B[i]) { judgeBit = i; result = st.A[i] > st.B[i] ? 'gt' : 'lt'; break; }
+      }
+      if (judgeBit === -1) {
+        result = st.eqIn === 1 ? 'eq' : (st.gtIn === 1 ? 'gt' : (st.ltIn === 1 ? 'lt' : 'eq'));
+      }
+      const outGt = result === 'gt' ? 1 : 0;
+      const outEq = result === 'eq' ? 1 : 0;
+      const outLt = result === 'lt' ? 1 : 0;
+      const aVal = st.A[0] + 2 * st.A[1] + 4 * st.A[2] + 8 * st.A[3];
+      const bVal = st.B[0] + 2 * st.B[1] + 4 * st.B[2] + 8 * st.B[3];
+
+      drawICBox(250, 30, 230, 400, '74HC85', judgeBit === -1 ? '四位全等 → 级联输入拍板' : `高位判决：A${judgeBit} vs B${judgeBit}`, true);
+
+      // 逐位比较单元：上 MSB 下 LSB
+      for (let k = 0; k < 4; k++) {
+        const i = 3 - k;
+        const rowY = 88 + k * 62;
+        const a = st.A[i], b = st.B[i];
+        drawSignalWire(95, rowY - 13, 280, rowY - 13, a === 1 ? 'high-active' : 'idle');
+        drawSignalWire(95, rowY + 13, 280, rowY + 13, b === 1 ? 'high-active' : 'idle');
+        ctx.font = '12px "JetBrains Mono"';
+        ctx.fillStyle = a === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`A${i}=${a}`, 45, rowY - 9);
+        ctx.fillStyle = b === 1 ? '#34d399' : '#94a3b8';
+        ctx.fillText(`B${i}=${b}`, 45, rowY + 17);
+
+        ctx.save();
+        ctx.fillStyle = '#0f172a';
+        ctx.strokeStyle = i === judgeBit ? '#fbbf24' : '#334155';
+        ctx.lineWidth = i === judgeBit ? 2.4 : 1.6;
+        ctx.beginPath();
+        ctx.roundRect(280, rowY - 22, 110, 44, 8);
+        ctx.fill(); ctx.stroke();
+        ctx.fillStyle = a === b ? '#34d399' : '#fbbf24';
+        ctx.font = 'bold 12px "JetBrains Mono"';
+        ctx.textAlign = 'center';
+        ctx.fillText(a === b ? `${i}位: =` : (a > b ? `${i}位: >` : `${i}位: <`), 335, rowY + 4);
+        ctx.restore();
+
+        // 连向判决节点
+        ctx.strokeStyle = i === judgeBit ? '#22d3ee' : '#334155';
+        ctx.lineWidth = i === judgeBit ? 2.5 : 1.2;
+        ctx.beginPath();
+        ctx.moveTo(390, rowY);
+        ctx.lineTo(442, 186);
+        ctx.stroke();
+
+        if (i === judgeBit) {
+          ctx.fillStyle = '#fbbf24';
+          ctx.font = 'bold 11px Inter';
+          ctx.fillText('⚡ 高位定胜负', 406, rowY - 28);
+        }
+      }
+
+      // 级联输入（四位全平时由它们拍板）
+      const cascPins = [
+        { name: "A>B in", v: st.gtIn, res: 'gt', y: 360 },
+        { name: "A=B in", v: st.eqIn, res: 'eq', y: 394 },
+        { name: "A<B in", v: st.ltIn, res: 'lt', y: 428 }
+      ];
+      cascPins.forEach(p => {
+        const isPath = judgeBit === -1 && result === p.res;
+        drawSignalWire(95, p.y, 262, p.y, isPath ? 'selected' : (p.v === 1 ? 'high-active' : 'idle'));
+        ctx.font = '12px "JetBrains Mono"';
+        ctx.fillStyle = isPath ? '#22d3ee' : (p.v === 1 ? '#34d399' : '#94a3b8');
+        ctx.fillText(`${p.name}=${p.v}`, 14, p.y - 6);
+        ctx.strokeStyle = isPath ? '#22d3ee' : '#334155';
+        ctx.lineWidth = isPath ? 2.5 : 1.2;
+        ctx.beginPath();
+        ctx.moveTo(262, p.y);
+        ctx.lineTo(442, 202);
+        ctx.stroke();
+      });
+      if (judgeBit === -1) {
+        ctx.fillStyle = '#a5f3fc';
+        ctx.font = 'bold 11px Inter';
+        ctx.fillText('四位全平，级联输入拍板！', 285, 336);
+      }
+
+      // 判决节点
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(450, 193, 16, 0, Math.PI * 2);
+      ctx.fillStyle = '#0f172a';
+      ctx.strokeStyle = '#22d3ee';
+      ctx.lineWidth = 2;
+      ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#a5f3fc';
+      ctx.font = 'bold 11px Inter';
+      ctx.textAlign = 'center';
+      ctx.fillText('判决', 450, 197);
+      ctx.restore();
+
+      // 三个互斥输出（指示灯）
+      const lamps = [
+        { name: 'A>B', v: outGt, y: 120 },
+        { name: 'A=B', v: outEq, y: 193 },
+        { name: 'A<B', v: outLt, y: 266 }
+      ];
+      lamps.forEach(l => {
+        const active = l.v === 1;
+        drawSignalWire(466, 193, 585, l.y, active ? 'high-active' : 'idle');
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(598, l.y, 11, 0, Math.PI * 2);
+        ctx.fillStyle = active ? '#22c55e' : '#1e293b';
+        if (active) { ctx.shadowColor = '#4ade80'; ctx.shadowBlur = 14; }
+        ctx.fill();
+        ctx.restore();
+        ctx.font = 'bold 12px "JetBrains Mono"';
+        ctx.fillStyle = active ? '#34d399' : '#64748b';
+        ctx.fillText(`${l.name} = ${l.v}`, 616, l.y + 5);
+      });
+
+      updateStatusCards([
+        {
+          label: '被比较的两个数',
+          value: `A = ${aVal} (${st.A[3]}${st.A[2]}${st.A[1]}${st.A[0]})  vs  B = ${bVal} (${st.B[3]}${st.B[2]}${st.B[1]}${st.B[0]})`,
+          color: 'text-sky-400',
+          border: 'border-sky-500'
+        },
+        {
+          label: '判决依据',
+          value: judgeBit === -1
+            ? `A3~A0 四位全相等 → 结果抄级联输入 (A=B in=${st.eqIn}, A>B in=${st.gtIn}, A<B in=${st.ltIn})`
+            : `${result === 'gt' ? 'A 胜出' : 'B 胜出'}：首个不等位 A${judgeBit}=${st.A[judgeBit]} ${result === 'gt' ? '>' : '<'} B${judgeBit}=${st.B[judgeBit]}，低位不再看`,
+          color: 'text-amber-300',
+          border: 'border-amber-500'
+        },
+        {
+          label: '输出三兄弟 (恒互斥，必有一 1)',
+          value: `A>B = ${outGt} | A=B = ${outEq} | A<B = ${outLt}`,
+          color: 'text-cyan-300',
+          border: 'border-cyan-500'
+        }
+      ]);
+    }
+
+    let rafId = null, loopRunning = false;
+    function animateLoop() {
+      if (!loopRunning) return;
+      animPhase = (animPhase + 1.4) % 1000;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      if (currentChip === '74HC148') render74HC148();
+      else if (currentChip === '74HC147') render74HC147();
+      else if (currentChip === '74HC138') render74HC138();
+      else if (currentChip === '74HC42') render74HC42();
+      else if (currentChip === '7448') render7448();
+      else if (currentChip === '74HC139') render74HC139();
+      else if (currentChip === '74HC4511') render74HC4511();
+      else if (currentChip === '74HC151') render74HC151();
+      else if (currentChip === '74HC153') render74HC153();
+      else if (currentChip === '74HC157') render74HC157();
+      else if (currentChip === '74HC283') render74HC283();
+      else if (currentChip === '74HC85') render74HC85();
+
+      rafId = requestAnimationFrame(animateLoop);
+    }
+    function startLoop() { if (loopRunning) return; loopRunning = true; rafId = requestAnimationFrame(animateLoop); }
+    function stopLoop() { loopRunning = false; if (rafId) cancelAnimationFrame(rafId); rafId = null; }
+
+    window.onload = function () {
+      fitCanvas();
+      selectChip('74HC148');
+      startLoop();
+      // 画布离开视口或页面不可见时停掉动画，避免无谓的 CPU/电量消耗
+      if (window.IntersectionObserver) {
+        new IntersectionObserver(function (es) {
+          es.forEach(function (e) { e.isIntersecting ? startLoop() : stopLoop(); });
+        }, {threshold: 0}).observe(canvas);
+      }
+      document.addEventListener('visibilitychange', function () {
+        document.hidden ? stopLoop() : startLoop();
+      });
+    };
+  </script>
+</body>
+</html>

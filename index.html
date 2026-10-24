@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>821 数电 · 5 天强化复习</title>
+<style>
+  :root{
+    --bg:#f5f6f8;
+    --card:#ffffff;
+    --ink:#14161a;
+    --ink-2:#5a6068;
+    --ink-3:#8b9099;
+    --accent:#2b4acb;
+    --accent-soft:#eef1fd;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Noto Sans SC","Microsoft YaHei UI","Microsoft YaHei",-apple-system,"Segoe UI",system-ui,sans-serif;
+    font-weight:500;
+    line-height:1.6;
+    padding:clamp(28px,6vw,72px) clamp(18px,5vw,56px) 72px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto}
+
+  header{margin-bottom:clamp(28px,4vw,44px)}
+  .eyebrow{
+    display:inline-block;
+    font-size:13px;font-weight:800;letter-spacing:.16em;
+    color:var(--accent);background:var(--accent-soft);
+    padding:6px 12px;border-radius:6px;margin-bottom:18px;
+  }
+  h1{
+    font-size:clamp(30px,5vw,46px);
+    font-weight:800;letter-spacing:-.01em;line-height:1.2;
+    margin-bottom:12px;
+  }
+  .sub{font-size:clamp(15px,2vw,17px);color:var(--ink-2);font-weight:500;max-width:52em}
+
+  .grid{
+    display:grid;gap:14px;
+    grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+    margin-top:clamp(26px,4vw,38px);
+  }
+  a.card{
+    display:block;text-decoration:none;color:inherit;
+    background:var(--card);border-radius:14px;
+    padding:22px 22px 20px;
+    transition:transform .18s ease,background .18s ease;
+  }
+  a.card:hover{transform:translateY(-2px);background:#fbfcff}
+  a.card:hover .title{color:var(--accent)}
+  .num{
+    font-size:13px;font-weight:800;letter-spacing:.1em;color:var(--ink-3);
+    margin-bottom:10px;display:block;
+  }
+  .title{font-size:20px;font-weight:800;line-height:1.35;margin-bottom:8px;transition:color .18s ease}
+  .desc{font-size:14px;color:var(--ink-2);font-weight:500}
+  .tags{margin-top:14px;display:flex;flex-wrap:wrap;gap:6px}
+  .tag{
+    font-size:12px;font-weight:700;color:var(--ink-2);
+    background:var(--bg);padding:3px 9px;border-radius:5px;
+  }
+  a.card.wide{grid-column:1/-1;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+  a.card.wide .body{flex:1;min-width:240px}
+  a.card.wide .arrow{font-size:26px;color:var(--accent);font-weight:800}
+
+  footer{
+    margin-top:clamp(34px,5vw,54px);
+    font-size:13px;color:var(--ink-3);font-weight:500;
+    display:flex;gap:8px;flex-wrap:wrap;align-items:center;
+  }
+  footer a{color:var(--ink-3);text-decoration:none;border-bottom:1px solid #dfe2e8;padding-bottom:1px}
+  footer a:hover{color:var(--accent);border-color:var(--accent)}
+  .dot{width:3px;height:3px;border-radius:50%;background:#cfd3da}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <span class="eyebrow">821 专业课 · 数字电子技术</span>
+    <h1>5 天强化复习</h1>
+    <p class="sub">按 Day 拆分的复习页面：电路分析 → 标准设计 → 触发器与状态记忆，配合十二款组合逻辑芯片动态实验台。全部为单页交互 HTML，公式由 KaTeX 渲染。</p>
+  </header>
+
+  <div class="grid">
+
+    <a class="card" href="./day1/">
+      <span class="num">DAY 01</span>
+      <div class="title">组合逻辑基础理解与电路分析</div>
+      <p class="desc">从真值表到逻辑图，掌握组合电路的读图、写式与最简变换。</p>
+      <div class="tags"><span class="tag">SSI 门级</span><span class="tag">逻辑函数化简</span><span class="tag">竞争冒险</span></div>
+    </a>
+
+    <a class="card" href="./day2/">
+      <span class="num">DAY 02</span>
+      <div class="title">组合逻辑标准设计与 MSI 器件应用</div>
+      <p class="desc">用译码器、数据选择器、加法器实现任意逻辑函数，固定题型套路化。</p>
+      <div class="tags"><span class="tag">74138</span><span class="tag">74151</span><span class="tag">设计题模板</span></div>
+    </a>
+
+    <a class="card" href="./day3/">
+      <span class="num">DAY 03</span>
+      <div class="title">触发器、边沿触发与状态记忆</div>
+      <p class="desc">锁存器与触发器的区别、特性方程、时序波形与状态转换。</p>
+      <div class="tags"><span class="tag">D / JK / T</span><span class="tag">边沿触发</span><span class="tag">波形分析</span></div>
+    </a>
+
+    <a class="card wide" href="./animation/chip-lab.html">
+      <div class="body">
+        <span class="num">实验台 · 12 款</span>
+        <div class="title" style="font-size:22px">组合逻辑 MSI 芯片动态原理实验台</div>
+        <p class="desc">十二款核心芯片的可交互原理演示：改输入即时看输出，把 MSI 器件的行为直接看见。</p>
+      </div>
+      <span class="arrow">→</span>
+    </a>
+
+  </div>
+
+  <footer>
+    <span>821 数电考研复习资料</span>
+    <span class="dot"></span>
+    <a href="https://github.com/jiabeijia9-hash/821-digital-electronics" target="_blank" rel="noopener">GitHub 仓库</a>
+    <span class="dot"></span>
+    <span>KaTeX 公式渲染 · 桌面端与移动端自适应</span>
+  </footer>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 1 · 组合逻辑基础理解与电路分析 | 821数电考研 · 5天强化复习</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./katex.css">
+</head>
+<body>
+  <noscript>
+    <div class="noscript-banner">
+      <p>⚠️ <strong>JavaScript 已禁用</strong>：本复习系统需要 JavaScript 支持以提供题目渲染、交互演示和学习进度存储功能。请在浏览器设置中启用 JavaScript 后刷新页面使用。</p>
+    </div>
+  </noscript>
+
+  <header>
+    <div class="header-inner">
+      <h1>Day 1 · 组合逻辑基础理解与电路分析</h1>
+      <p class="subtitle">821数电考研 · 5天强化复习</p>
+    </div>
+  </header>
+
+  <nav id="main-nav" aria-label="页面主要导航">
+    <div class="nav-container">
+      <a href="#sec-progress" class="nav-item">📊 学习进度</a>
+      <a href="#sec-tasks" class="nav-item">📋 任务与考点</a>
+      <a href="#sec-knowledge" class="nav-item">📚 知识重构</a>
+      <a href="#sec-canvas" class="nav-item">🎮 交互演示</a>
+      <a href="#sec-required" class="nav-item">✏️ 必做题区</a>
+      <a href="#sec-extension" class="nav-item">🚀 拓展题区</a>
+      <a href="#sec-errors" class="nav-item">📝 错题记录</a>
+      <a href="#sec-review" class="nav-item">🔄 当日复测</a>
+    </div>
+  </nav>
+
+  <div id="storage-warning" style="display: none;">
+    <div class="storage-warning-box">
+      <span class="warning-icon">⚠️</span>
+      <div class="warning-text">
+        <strong>本地存储提示：</strong>检测到当前浏览器环境下无法访问 localStorage（可能处于无痕模式或本地文件访问受限）。做题进度与错题笔记在刷新后将无法持久化保存。
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="sec-progress">
+      <div id="progress-container"></div>
+    </section>
+    
+    <section id="sec-tasks">
+      <h2>📋 第1项：今日学习任务与考点自查</h2>
+      <div id="tasks-container"></div>
+      <h3>考点自查表</h3>
+      <div id="checklist-container"></div>
+      <div class="info-box">
+        <h4>📺 今日网课任务</h4>
+        <p><strong>主线课程（新手小牛）：</strong></p>
+        <ul>
+          <li>诊断回顾（已学内容确认）：P6 逻辑代数、P7 逻辑函数的代数化简法</li>
+          <li>卡诺图核心：P9 卡诺图化简法---最小项、P10 卡诺图的引出、P11 卡诺图的化简方法、P12 含有无关项的卡诺图化简</li>
+          <li>组合逻辑分析：P22 组合逻辑电路的分析与设计（SSI）、P23 组合逻辑电路的竞争与冒险</li>
+        </ul>
+        <p><strong>可选补充（姬清影）：</strong></p>
+        <ul>
+          <li>P34 组合逻辑电路的特点与功能、P35 组合逻辑电路的分析方法、P36 组合逻辑电路的设计方法</li>
+        </ul>
+        <p><strong>观看要求：</strong>建议先读字幕文字稿定位重点，再看视频。看完后必须独立完成知识重构区的要点整理和至少一道诊断题。</p>
+      </div>
+    </section>
+    
+    <section id="sec-knowledge">
+      <h2>📚 第3项：结构化知识重构</h2>
+      <div id="knowledge-container"></div>
+    </section>
+    
+    <section id="sec-canvas">
+      <h2>🎮 交互演示：组合逻辑电路输入-输出关系</h2>
+      <p class="section-desc">点击输入开关切换高低电平，观察组合逻辑电路的输出变化和真值表对应关系。</p>
+      <div id="canvas-container">
+        <canvas id="logic-canvas" width="800" height="400"></canvas>
+      </div>
+      <div id="canvas-fallback" style="display:none">
+        <p>Canvas 不可用，请参考上方知识卡片中的真值表内容。</p>
+      </div>
+    </section>
+    
+    <section id="sec-required">
+      <h2>✏️ 第4项：【必做区】核心考法覆盖训练</h2>
+      <p class="section-desc">占总题量约80%，覆盖每一种核心考法。包含综合难题和边界变式。分析、设计、推导、计算和综合大题占比≥80%。</p>
+      <div id="required-container"></div>
+    </section>
+    
+    <section id="sec-extension">
+      <h2>🚀 第5项：【拓展区】冲刺训练</h2>
+      <p class="section-desc">占总题量约20%，用于高难综合设计和防偏门训练。时间紧张可先记录，Day5集中处理。</p>
+      <div id="extension-container"></div>
+    </section>
+    
+    <section id="sec-errors">
+      <h2>📝 第6项：错题记录与强制纠错</h2>
+      <p class="section-desc">所有错题自动汇总于此。每题必须记录错因分类和具体纠正动作。</p>
+      <div id="wrong-notes-container"></div>
+    </section>
+    
+    <section id="sec-review">
+      <h2>🔄 第7项：当日复测</h2>
+      <p class="section-desc">使用新的AI变式检验关键考法是否真正掌握。完成后自评掌握程度。</p>
+      <div id="review-container"></div>
+      <div id="review-summary"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Day 1 · 组合逻辑基础理解与电路分析 | 821数电考研 · 5天强化突破</p>
+    <p>题库精选阎石/康华光经典教材母题、水木660考研大题与针对性AI边界变式，全面覆盖考纲考法。</p>
+    <p>下一天继承：将未掌握的知识点和错题带入 Day 2 的组合逻辑标准设计与 MSI 器件应用训练。</p>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./main.js" defer></script>
+</body>
+</html>

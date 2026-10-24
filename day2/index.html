@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Day 2 · 组合逻辑标准设计与 MSI 器件应用 | 821数电考研 · 5天强化复习</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./katex.css">
+</head>
+<body>
+  <noscript>
+    <div class="noscript-banner">
+      <p>⚠️ <strong>JavaScript 已禁用</strong>：本复习系统需要 JavaScript 支持以提供题目渲染、交互演示和学习进度存储功能。请在浏览器设置中启用 JavaScript 后刷新页面使用。</p>
+    </div>
+  </noscript>
+
+  <header>
+    <div class="header-inner">
+      <h1>Day 2 · 组合逻辑标准设计与 MSI 器件应用</h1>
+      <p class="subtitle">821数电考研 · 5天强化复习</p>
+    </div>
+  </header>
+
+  <nav id="main-nav" aria-label="页面主要导航">
+    <div class="nav-container">
+      <a href="#sec-progress" class="nav-item">📊 学习进度</a>
+      <a href="#sec-tasks" class="nav-item">📋 任务与考点</a>
+      <a href="#sec-knowledge" class="nav-item">📚 知识重构</a>
+      <a href="#sec-canvas" class="nav-item">🎮 交互演示</a>
+      <a href="#sec-required" class="nav-item">✏️ 必做题区</a>
+      <a href="#sec-extension" class="nav-item">🚀 拓展题区</a>
+      <a href="#sec-errors" class="nav-item">📝 错题记录</a>
+      <a href="#sec-review" class="nav-item">🔄 当日复测</a>
+    </div>
+  </nav>
+
+  <div id="storage-warning" style="display: none;">
+    <div class="storage-warning-box">
+      <span class="warning-icon">⚠️</span>
+      <div class="warning-text">
+        <strong>本地存储提示：</strong>检测到当前浏览器环境下无法访问 localStorage（可能处于无痕模式或本地文件访问受限）。做题进度与错题笔记在刷新后将无法持久化保存。
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="sec-progress">
+      <div id="progress-container"></div>
+    </section>
+
+    <section id="sec-tasks">
+      <h2>📋 第1项：今日学习任务与考点自查</h2>
+      <div id="tasks-container"></div>
+      <h3>考点自查表</h3>
+      <div id="checklist-container"></div>
+      <div class="info-box">
+        <h4>📺 今日网课任务</h4>
+        <p><strong>主线课程（新手小牛）：</strong></p>
+        <ul>
+          <li>编码器：P25 组合逻辑集成电路——编码器（1）、P26 组合逻辑集成电路——编码器（2）</li>
+          <li>译码器（核心）：P27 组合逻辑集成电路——译码器(1)、P28 组合逻辑集成电路——译码器(2)、P29 组合逻辑集成电路——译码器(3)</li>
+          <li>数据选择器与比较器：P31 组合逻辑集成电路---数据选择器、P32 组合逻辑集成电路——比较器</li>
+          <li>算术运算与串联：P35 组合逻辑集成电路——算术运算电路、P37 前四章内容归纳复习</li>
+        </ul>
+        <p><strong>可选补充（姬清影）：</strong></p>
+        <ul>
+          <li>P37 普通编码器、P38 优先编码器功能熟悉、P39 优先编码器74HC148、P40 优先编码器74HC147</li>
+          <li>P41 译码器74HC138、P42 译码器74HC42、P43 显示译码器7448、P45 数据选择器</li>
+          <li>P46 半加器与全加器、P47 多位加法器、P48 数值比较器</li>
+        </ul>
+        <p><strong>观看要求：</strong>建议先读字幕文字稿定位重点，再看视频。看完后必须独立完成知识重构区的公式默写与至少一道诊断题，不得以“听完视频”作为完成标准。</p>
+        <p><strong>Day1 回滚要求：</strong>开始今日任务前，先把 Day1 错题本中“卡诺图化简 / 无关项 / 竞争冒险”三类题重做一遍；今日新学的 138 冒险与 151 降维都要用到这些前置能力。</p>
+      </div>
+    </section>
+
+    <section id="sec-knowledge">
+      <h2>📚 第3项：结构化知识重构</h2>
+      <div id="knowledge-container"></div>
+    </section>
+
+    <section id="sec-canvas">
+      <h2>🎮 交互演示：74HC138 译码 + 74HC151 选择联动</h2>
+      <p class="section-desc">点击左侧 A2/A1/A0 改变地址，观察 138 的低有效输出如何“选中”一个最小项；再点击中间 D0~D7 修改数据端，观察 151 如何按同一地址选出对应数据。把所有 D 都拨到 1，即得到固定的三输入与非门函数。</p>
+      <div id="canvas-container">
+        <canvas id="logic-canvas" width="880" height="400"></canvas>
+      </div>
+      <div id="canvas-fallback" style="display:none">
+        <p>Canvas 不可用，请参考上方知识卡片中的 138 使能表与 151 数据端判定规则。</p>
+      </div>
+    </section>
+
+    <section id="sec-required">
+      <h2>✏️ 第4项：【必做区】核心考法覆盖训练（Q001 ~ Q020）</h2>
+      <p class="section-desc">占总题量 80%，覆盖 7 类核心考法与 3 道边界变式（Q017 地址错位、Q018 取反策略、Q019 MSI 毛刺）。全部为分析/设计/计算/综合大题，闭卷作答后再对照得分点。</p>
+      <div id="required-container"></div>
+    </section>
+
+    <section id="sec-extension">
+      <h2>🚀 第5项：【拓展区】冲刺训练（Q021 ~ Q025）</h2>
+      <p class="section-desc">占总题量 20%，用于高难综合设计与防偏门训练（16 选 1 扩展、非法码检测、8 位算术通路、42+7448 显示译码、8 路报警系统）。时间紧张可先记录思路，Day5 集中处理。</p>
+      <div id="extension-container"></div>
+    </section>
+
+    <section id="sec-errors">
+      <h2>📝 第6项：错题记录与强制纠错</h2>
+      <p class="section-desc">所有错题自动汇总于此。每题必须记录错因分类和具体纠正动作；MSI 类题目请优先归入“E05 电路引脚与功能分析错误”。</p>
+      <div id="wrong-notes-container"></div>
+    </section>
+
+    <section id="sec-review">
+      <h2>🔄 第7项：当日复测（R001 ~ R003）</h2>
+      <p class="section-desc">使用新的 AI 变式检验 138 扩展、151 降维、BCD 加法与非法码三条主线的掌握程度。完成后自评掌握程度。</p>
+      <div id="review-container"></div>
+      <div id="review-summary"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Day 2 · 组合逻辑标准设计与 MSI 器件应用 | 821数电考研 · 5天强化突破</p>
+    <p>题库覆盖 74HC148 / 147 / 138 / 151 / 153 / 283 / 85 / 42 / 7448 的功能、函数实现、级联扩展与系统综合，全部题目标注来源类型，不含任何伪造真题。</p>
+    <p>下一天继承：Day1 中未掌握的卡诺图与冒险判据，以及今日未掌握的“降维法数据端判定”“片内编号重排”将带入 Day 3 触发器训练前回滚。</p>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./main.js" defer></script>
+</body>
+</html>
