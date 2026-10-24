@@ -26,6 +26,7 @@
       <a href="#sec-progress" class="nav-item">📊 学习进度</a>
       <a href="#sec-tasks" class="nav-item">📋 任务与考点</a>
       <a href="#sec-knowledge" class="nav-item">📚 知识重构</a>
+      <a href="#sec-schematic" class="nav-item">🎛 原理图动画</a>
       <a href="#sec-canvas" class="nav-item">🎮 交互演示</a>
       <a href="#sec-required" class="nav-item">✏️ 必做题区</a>
       <a href="#sec-extension" class="nav-item">🚀 拓展题区</a>
@@ -78,6 +79,12 @@
       <div id="knowledge-container"></div>
     </section>
 
+    <section id="sec-schematic">
+      <h2>🎛 原理图动画：SR 锁存器的门级结构与状态演变</h2>
+      <p class="section-desc">左侧是真实门级电路（含两条交叉反馈线），右侧讲解面板与真值表会随播放进度同步高亮。点「播放」后信号按门延迟逐级推进：<strong>输入先变 → 反馈线变 → 对侧门输出最后变</strong>；下方时序波形每步追加一列，可对照"先 Q̄ 后 Q"的因果顺序。禁止态与竞争不定态单独用琥珀色标出。切换四种结构可看到同一套机理在或非 / 与非 / 门控 / D 锁存器上的差别。</p>
+      <div id="latch-lab-container"></div>
+    </section>
+
     <section id="sec-canvas">
       <h2>🎮 交互演示：触发器波形实验台（CP / J / K / D → Q）</h2>
       <p class="section-desc">先选触发方式，再点“CP 翻转”制造时钟沿，观察 Q 在哪个时刻更新；点 J/K/D 改变输入，体会“边沿采样”与“高电平透明”的差别；随时可用“异步清 0 / 置 1”强行打断输出。每点一次，波形右侧就多一列。</p>
@@ -123,5 +130,6 @@
 
   <script src="./data.js"></script>
   <script src="./main.js" defer></script>
+  <script src="./latch-lab.js" defer></script>
 </body>
 </html>

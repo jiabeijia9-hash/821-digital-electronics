@@ -2149,3 +2149,454 @@ body.d2-anim #canvas-container {
     vertical-align: -0.38em;
   }
 }
+
+/* ==========================================================================
+   十八、SR 锁存器原理图动画（latch-lab.js 专用）
+   --------------------------------------------------------------------------
+   与全站视觉一致：浅色底、1px 描边、无重阴影；电平用蓝(1)/灰(0)/琥珀(×)
+   三色统一编码，电路图、波形、状态标签共用同一套色值。
+   ========================================================================== */
+.ll-wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 1rem 1.1rem 1.1rem;
+}
+
+/* 结构页签 */
+.ll-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.ll-tab {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  padding: 0.5rem 0.65rem;
+  background: var(--bg-subtle);
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.ll-tab:hover { background: var(--primary-light); }
+
+.ll-tab.is-active {
+  background: var(--primary-light);
+  border-color: var(--primary-border);
+}
+
+.ll-tab-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.ll-tab.is-active .ll-tab-name { color: var(--primary-active); }
+
+.ll-tab-badge {
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--text-light);
+  letter-spacing: 0.02em;
+}
+
+/* 舞台：电路 + 讲解面板 */
+.ll-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1.08fr) minmax(260px, 0.92fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+.ll-svg-wrap {
+  background: #fcfdff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.4rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ll-svg { display: block; width: 100%; height: auto; }
+
+/* 器件 */
+.ll-gate-body {
+  fill: #ffffff;
+  stroke: #334155;
+  stroke-width: 1.5;
+}
+
+.ll-gate-sym {
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 700;
+  fill: #1f2937;
+}
+
+.ll-bubble {
+  fill: #ffffff;
+  stroke: #334155;
+  stroke-width: 1.5;
+}
+
+/* 连线 */
+.ll-wire {
+  fill: none;
+  stroke: var(--border-dark, #cbd5e1);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.18s ease;
+}
+
+.ll-wire.lv-1 { stroke: #2563eb; stroke-width: 2.6; }
+.ll-wire.lv-0 { stroke: #94a3b8; stroke-width: 2; }
+.ll-wire.lv-x { stroke: #d97706; stroke-dasharray: 5 4; stroke-width: 2; }
+
+/* 使能总线：靠白晕表现"跨过不连接" */
+.ll-wire-over { filter: drop-shadow(0 0 1.5px #fcfdff) drop-shadow(0 0 1.5px #fcfdff); }
+
+/* 引脚 / 端点 */
+.ll-pin {
+  fill: #94a3b8;
+  stroke: #ffffff;
+  stroke-width: 1.2;
+  transition: fill 0.18s ease;
+}
+
+.ll-pin.lv-1 { fill: #2563eb; }
+.ll-pin.lv-0 { fill: #94a3b8; }
+.ll-pin.lv-x { fill: #d97706; }
+
+.ll-node {
+  fill: #94a3b8;
+  stroke: #ffffff;
+  stroke-width: 2;
+  cursor: pointer;
+  transition: fill 0.18s ease, r 0.15s ease;
+}
+
+.ll-node:hover { stroke: #2563eb; }
+.ll-node.lv-1 { fill: #2563eb; }
+.ll-node.lv-0 { fill: #94a3b8; }
+
+/* 输出徽标 */
+.ll-badge {
+  fill: var(--bg-subtle);
+  stroke: var(--border-color);
+  stroke-width: 1;
+  transition: fill 0.18s ease, stroke 0.18s ease;
+}
+
+.ll-badge.lv-1 { fill: #dbeafe; stroke: #93c5fd; }
+.ll-badge.lv-0 { fill: #f1f5f9; stroke: #d8dee6; }
+.ll-badge.lv-x { fill: #fef3c7; stroke: #fcd34d; }
+
+.ll-badge-txt {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  fill: #475569;
+}
+
+.ll-badge-txt.lv-1 { fill: #1d4ed8; }
+.ll-badge-txt.lv-0 { fill: #4b5563; }
+.ll-badge-txt.lv-x { fill: #b45309; }
+
+.ll-net-label,
+.ll-in-label {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  fill: #475569;
+}
+
+.ll-in-label { font-size: 14px; }
+
+/* 右侧讲解面板 */
+.ll-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.86rem;
+  color: var(--text-regular);
+}
+
+.ll-panel-head { display: flex; align-items: center; gap: 0.4rem; }
+
+.ll-panel-tag {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--primary-active);
+  background: var(--primary-light);
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+}
+
+.ll-panel-rule {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.ll-eq {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.55;
+  color: var(--text-main);
+  background: var(--bg-subtle);
+  border-left: 3px solid var(--primary-border);
+  border-radius: 0 4px 4px 0;
+  padding: 0.45rem 0.6rem;
+  word-break: break-word;
+}
+
+.ll-now { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+
+.ll-chip {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--text-regular);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border-color);
+  border-radius: 999px;
+  padding: 0.12rem 0.5rem;
+}
+
+.ll-chip b { font-weight: 800; }
+.ll-chip b.lv-1 { color: #1d4ed8; }
+.ll-chip b.lv-0 { color: #4b5563; }
+.ll-chip b.lv-x { color: #b45309; }
+
+.ll-chip-state { color: var(--text-main); background: #ffffff; }
+.ll-chip-state.is-x { color: #b45309; background: #fffbeb; border-color: #fcd34d; }
+
+.ll-step {
+  border-top: 1px dashed var(--border-color);
+  padding-top: 0.55rem;
+}
+
+.ll-step-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.3rem;
+}
+
+.ll-step-text {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.62;
+  color: var(--text-muted);
+}
+
+/* 真值表 */
+.ll-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+  font-family: inherit;
+}
+
+.ll-table th {
+  background: var(--bg-subtle);
+  color: var(--text-muted);
+  font-weight: 700;
+  padding: 0.24rem 0.2rem;
+  border-bottom: 1px solid var(--border-color);
+  white-space: nowrap;
+}
+
+.ll-table td {
+  padding: 0.22rem 0.2rem;
+  text-align: center;
+  color: var(--text-regular);
+  border-bottom: 1px solid var(--border-light);
+  white-space: nowrap;
+}
+
+.ll-table tbody tr.is-now {
+  background: #dbeafe;
+}
+
+.ll-step-count {
+  font-size: 0.72rem;
+  font-weight: 500;
+  color: var(--text-subtle);
+  margin-left: 0.35rem;
+}
+
+.ll-table tbody tr.is-now td { color: var(--primary-active); font-weight: 700; }
+
+.ll-table .ll-td-out { font-family: var(--font-mono); font-weight: 700; }
+.ll-table .ll-td-desc { text-align: left; color: var(--text-light); white-space: nowrap; }
+
+/* 控制条 */
+.ll-ctrl {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.45rem;
+  margin-top: 0.9rem;
+}
+
+.ll-btn {
+  font-family: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-regular);
+  background: #ffffff;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius-sm);
+  padding: 0.32rem 0.7rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.ll-btn:hover { border-color: var(--primary); color: var(--primary-active); }
+
+.ll-btn-primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #ffffff;
+}
+
+.ll-btn-primary:hover { background: var(--primary-hover); border-color: var(--primary-hover); color: #ffffff; }
+
+.ll-speed {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.ll-speed select {
+  font-family: inherit;
+  font-size: 0.78rem;
+  color: var(--text-regular);
+  border: 1px solid var(--border-dark);
+  border-radius: 4px;
+  padding: 0.18rem 0.3rem;
+  background: #ffffff;
+}
+
+.ll-tip {
+  font-size: 0.74rem;
+  color: var(--text-subtle);
+  margin-left: auto;
+}
+
+/* 波形 */
+.ll-wave { margin-top: 0.9rem; }
+
+.ll-wave-title {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.35rem;
+}
+
+.ll-wave-title span {
+  font-weight: 500;
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+  margin-left: 0.4rem;
+}
+
+.ll-wave-scroll {
+  width: 100%;
+  overflow-x: auto;
+  background: #fcfdff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.2rem 0;
+}
+
+.ll-wave-svg { display: block; margin: 0 auto; }
+
+.ll-wave-base { stroke: #e2e8f0; stroke-width: 1; }
+
+.ll-wave-tick { stroke: #f1f5f9; stroke-width: 1; }
+
+.ll-wave-label {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  fill: #475569;
+}
+
+.ll-wave-line {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+
+.ll-wave-line.is-x { stroke-dasharray: 4 3; }
+
+.ll-col-hi { fill: #eff6ff; }
+
+/* 图例 */
+.ll-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  color: var(--text-subtle);
+}
+
+.ll-lg { display: inline-flex; align-items: center; gap: 0.28rem; }
+
+.ll-lg-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.ll-lg-hi { background: #2563eb; }
+.ll-lg-lo { background: #94a3b8; }
+.ll-lg-x { background: #d97706; }
+
+/* 响应式 */
+@media (max-width: 860px) {
+  .ll-tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ll-stage { grid-template-columns: 1fr; }
+  .ll-tip { margin-left: 0; width: 100%; }
+  .ll-svg-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .ll-svg { min-width: 520px; }
+  .ll-svg-wrap::after {
+    content: "← 电路图可左右滑动查看完整接线 →";
+    display: block;
+    font-size: 0.68rem;
+    color: var(--text-subtle);
+    text-align: center;
+    padding: 0.2rem 0 0.35rem;
+  }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .ll-wire, .ll-pin, .ll-node, .ll-badge, .ll-btn { transition: none; }
+}
+
+/* 打印：只保留电路与波形 */
+@media print {
+  .ll-ctrl, .ll-tabs, .ll-legend { display: none !important; }
+  .ll-stage { grid-template-columns: 1fr; }
+}
